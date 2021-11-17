@@ -1,4 +1,4 @@
-from os import path
+from os import path, makedirs
 from xhexport import config
 
 rootdir = config.rootdir
@@ -18,6 +18,11 @@ def locate_file(abspath):
 
 
 def write_result(abspath, content):
-    file = open(path.abspath(path.join(distdir, abspath)), 'w+',encoding='utf-8')
+    target = path.abspath(path.join(distdir, abspath))
+    try:
+        makedirs(path.dirname(target))
+    except FileExistsError:
+        pass
+    file = open(target, 'w+', encoding='utf-8')
     file.write(content)
     file.close()
