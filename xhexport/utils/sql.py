@@ -1,7 +1,7 @@
 from sqlite3 import Connection
 
 
-def select_all(conn: Connection, table, where=None):
+def select(conn: Connection, table, where=None):
     cmd = 'SELECT * FROM ' + table
     if where is not None:
         cmd += ' WHERE ' + where

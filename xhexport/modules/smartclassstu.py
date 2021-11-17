@@ -2,7 +2,7 @@ import json
 import sqlite3
 from xhexport import config
 from xhexport.utils import locate, write_result
-from xhexport.utils.sql import select_all
+from xhexport.utils.sql import select
 
 name = '云课堂'
 package_name = 'com.xh.smartclassstu'
@@ -13,7 +13,6 @@ def build():
                      f'{config.userid}/ztkt_stu_v4.db')
     db = sqlite3.connect(db_file)
 
-    task_rows = select_all(db, 'TaskDetail')
     task = {
         i[24]: dict(
             id=i[0],
@@ -23,10 +22,9 @@ def build():
             # remote_url=(i[10] or '')[:-2],
             create_time=i[13],
         )
-        for i in task_rows if i[24]
+        for i in select(db, 'TaskDetail') if i[24]
     }
 
-    resource_rows = select_all(db, 'resourceinfo')
     resource = [
         dict(
             **task[i[0]],
@@ -34,7 +32,7 @@ def build():
             remote_url=i[2][:-2],
             type=int(i[4]),
             local_path=i[5],
-        ) for i in resource_rows
+        ) for i in select(db, 'resourceinfo')
     ]
     resource.sort(
         key=lambda x: x['download_time'],

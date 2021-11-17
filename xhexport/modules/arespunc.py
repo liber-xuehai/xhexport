@@ -2,7 +2,7 @@ import json
 import sqlite3
 from xhexport import config
 from xhexport.utils import locate_db, write_result
-from xhexport.utils.sql import select_all
+from xhexport.utils.sql import select
 
 name = '响应'
 package_name = 'com.xh.arespunc'
@@ -12,8 +12,6 @@ def build():
     db_file = locate_db(f'{package_name}/{config.userid}/{config.userid}.db')
     db = sqlite3.connect(db_file)
 
-    contact_rows = select_all(db, 'CONTACT')
-    session_rows = select_all(db, 'SESSION')
     session = {
         **{
             int(i[0]): dict(
@@ -21,7 +19,7 @@ def build():
                 type='SINGLE',
                 last_update=0,
             )
-            for i in contact_rows
+            for i in select(db, 'CONTACT')
         },
         **{
             int(i[0]): dict(
@@ -29,11 +27,10 @@ def build():
                 type=i[3],
                 last_update=i[7],
             )
-            for i in session_rows
+            for i in select(db, 'SESSION')
         },
     }
 
-    message_rows = select_all(db, 'CHAT_MSG')
     message = [
         dict(
             id=i[0],
@@ -45,7 +42,7 @@ def build():
             session_type=session[int(i[2])]['type'],
             content=i[6],
             created_time=i[7],
-        ) for i in message_rows
+        ) for i in select(db, 'CHAT_MSG')
     ]
     message.sort(
         key=lambda x: x['created_time'],
