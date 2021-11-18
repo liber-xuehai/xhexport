@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 import json
 import sqlite3
 from xhexport import config

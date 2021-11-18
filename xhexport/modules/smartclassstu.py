@@ -1,11 +1,20 @@
+# -*- coding: UTF-8 -*-
+
 import json
 import sqlite3
+from os import path
+from colorama import Fore
 from xhexport import config
-from xhexport.utils import locate, write_result
+from xhexport.utils import locate, write_result, logger, makedirs
 from xhexport.utils.sql import select
+from xhexport.methods.export_ppt import export_per_page as save_ppt
 
 name = '云课堂'
 package_name = 'com.xh.smartclassstu'
+
+
+class SmartClassExportError(Exception):
+    pass
 
 
 def build():
@@ -43,3 +52,22 @@ def build():
                  json.dumps(task, ensure_ascii=False))
     write_result('smartclassstu/resource.json',
                  json.dumps(resource, ensure_ascii=False))
+
+
+def export_ppt(data):
+    log = logger('云课堂')
+    log('导出课件', Fore.MAGENTA + data['name'])
+    local_dir = data['remote_url'][:-2].split('/')[-1]
+    real_path = locate(f'5017/filebases/{package_name}/{config.userid}/' +
+                       f'ztktv4_resource/{local_dir}/{data["local_path"]}')
+    dist_path = path.join(config.distdir, 'export', f'smartclass-{data["id"]}',
+                          f'{data["name"]}.pdf')
+    makedirs(path.dirname(dist_path))
+    save_ppt(real_path, dist_path)
+
+
+def export(data):
+    if data['type'] == 5:
+        return export_ppt(data)
+    else:
+        raise SmartClassExportError('不支持的类型')

@@ -1,5 +1,7 @@
+/config.yml
 /xuehai
 /data
+/export
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
