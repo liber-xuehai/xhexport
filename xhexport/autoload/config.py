@@ -1,3 +1,4 @@
+import yaml
 from os import path, listdir
 
 
@@ -22,6 +23,13 @@ class Config:
         self.rootdir = get_rootdir()
         self.distdir = get_distdir()
         self.userid = get_userid(self.rootdir)
+
+        file = open(path.join(path.dirname(__file__), '../../config.yml'),
+                    'r+')
+        data = yaml.load(file.read(), Loader=yaml.SafeLoader)
+        file.close()
+
+        self.chrome_driver = data['chrome_driver']
 
 
 config = Config()
