@@ -40,8 +40,8 @@ def build():
             download_time=i[3],
             remote_url=i[2][:-2],
             type=int(i[4]),
-            local_path=i[5],
-        ) for i in select(db, 'resourceinfo')
+            local_path=i[6],
+        ) for i in select(db, 'resourceinfo') if i[0] in task
     ]
     resource.sort(
         key=lambda x: x['download_time'],
@@ -56,12 +56,14 @@ def build():
 
 def export_ppt(data):
     log = logger('云课堂')
-    log('导出课件', Fore.MAGENTA + data['name'])
+    log(data)
+    log('导出课程', Fore.MAGENTA + data['id'] + Fore.RESET, \
+        '课件', Fore.MAGENTA + data['name'] + Fore.RESET)
     local_dir = data['remote_url'][:-2].split('/')[-1]
     real_path = locate(f'5017/filebases/{package_name}/{config.userid}/' +
                        f'ztktv4_resource/{local_dir}/{data["local_path"]}')
     dist_path = path.join(config.distdir, 'export', f'smartclass-{data["id"]}',
-                          f'{data["name"]}.pdf')
+                          f'{data["name"]}.pptx')
     makedirs(path.dirname(dist_path))
     save_ppt(real_path, dist_path)
 
