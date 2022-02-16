@@ -1,0 +1,33 @@
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table, table th, table td {
+	border: 1.2px solid black;
+}
+table tr {
+	min-height: 20px;
+	line-height: 20px;
+}
+table th, table td {
+	padding: 5px;
+}
+
+#navbar {
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+}
+#navbar a {
+	height: 20px;
+	line-height: 20px;
+	font-size: 18px;
+	padding: 20px;
+}
+
+#container {
+	padding: 10px;
+	width: 100%;
+	max-width: 1020px;
+	margin: auto;
+}
