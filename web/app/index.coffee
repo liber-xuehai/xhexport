@@ -90,21 +90,10 @@ Router.register '/acldstu/*', (path) ->
 					# JSON.stringify answer[col.questionId],
 				]
 	
-	html = $ Element.Table ['#', '类型', '内容'], table
+	title: path.split('/')[-1..][0] + ' - 云作业'
+	html: $ Element.Table ['#', '类型', '内容'], table
 		.addClass 'acldstu-homework'
 		.prop 'outerHTML'
-	html += '
-		<style>
-			table.acldstu-homework>tbody>tr>td:nth-child(1){min-width:25px;text-align:center}
-			table.acldstu-homework>tbody>tr>td:nth-child(2){min-width:30px;text-align:center}
-			table.acldstu-homework>tbody>tr>td:nth-child(3)>p:first-child{margin-block-start:.5em;}
-			table.acldstu-homework>tbody>tr>td:nth-child(3)>p:last-child{margin-block-end:.5em;}
-			table.acldstu-homework img{max-width:100%}
-		</style>
-	'
-
-	title: path.split('/')[-1..][0] + ' - 云作业'
-	html: html
 	onLoad:	($container) ->
 		$container
 			.find '.mathquill-embedded-latex'

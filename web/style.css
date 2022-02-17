@@ -70,3 +70,21 @@ table td {
   max-width: 1020px;
   margin: auto;
 }
+
+table.acldstu-homework > tbody > tr > td:nth-child(1) {
+  min-width: 25px;
+  text-align: center;
+}
+table.acldstu-homework > tbody > tr > td:nth-child(2) {
+  min-width: 30px;
+  text-align: center;
+}
+table.acldstu-homework > tbody > tr > td:nth-child(3) > p:first-child {
+  margin-block-start: 0.5em;
+}
+table.acldstu-homework > tbody > tr > td:nth-child(3) > p:last-child {
+  margin-block-end: 0.5em;
+}
+table.acldstu-homework img {
+  max-width: 100%;
+}
