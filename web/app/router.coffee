@@ -1,4 +1,4 @@
-window.Router = class
+window.Router = new class
 	constructor: ->
 		window.onhashchange = => @reload()
 		@hashMap = {}
@@ -33,9 +33,16 @@ window.Router = class
 			progressBar.set 16
 			progressBar.autoIncrease 4, 120
 			Data.current = null
-			html = await render()
-			$("#container").html html
-			progressBar.set 96
+			result = await render args
+			console.log result
+			$("#container").html result.html
+			if result.title
+				$('title').html result.title + ' - OpenXueHai'
+			else
+				$('title').html 'OpenXueHai'
+			progressBar.set 92
+			if result.onLoad
+				result.onLoad $('#container')
 			await Util.sleep(300)
 			progressBar.end()
 
