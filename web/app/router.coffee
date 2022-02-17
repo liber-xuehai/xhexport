@@ -25,6 +25,7 @@ window.Router = new class
 					args.push location[i]
 				else if route[i] != location[i]
 					args = false
+					break
 			if args is false
 				continue
 
@@ -33,7 +34,7 @@ window.Router = new class
 			progressBar.set 16
 			progressBar.autoIncrease 4, 120
 			Data.current = null
-			result = await render args
+			result = await render ...args
 			console.log result
 			$("#container").html result.html
 			if result.title

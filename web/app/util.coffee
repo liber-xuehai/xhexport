@@ -18,7 +18,7 @@ window.Util =
 			pattern
 
 		toDate: (clock) ->
-			Util.Date.format clock, 'yyyy-M-d hh:mm:ss'
+			Util.Date.format clock, 'yyyy/MM/dd hh:mm:ss'
 
 		toShortDate: (clock) ->
 			Util.Date.format clock, 'yy/MM/dd hh:mm'
