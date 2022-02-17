@@ -29,9 +29,15 @@ window.Router = class
 				continue
 
 			found = true
+			progressBar = progressJs('#progressBar').start()
+			progressBar.set 16
+			progressBar.autoIncrease 4, 120
 			Data.current = null
 			html = await render()
 			$("#container").html html
+			progressBar.set 96
+			await Util.sleep(300)
+			progressBar.end()
 
 		if not found
 			$('#container').html '404 Not Found'

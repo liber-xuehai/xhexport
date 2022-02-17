@@ -18,7 +18,6 @@ router.register '/smartclassstu', ->
 		
 		if col.type is 5
 			plain = JSON.stringify col
-			console.log plain
 			base64 = Util.Base64.encode plain
 			command = 'python export.py ykt ' + base64
 			actions += Element.Button '导出PPT', 'window.Util.clipText(\'' + command + '\')'

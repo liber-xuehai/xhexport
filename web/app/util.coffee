@@ -5,6 +5,9 @@ window.Util =
 		decode: (string) -> 
 			decodeURIComponent escape window.atob string
 
+	sleep: (ms) -> 
+		new Promise (resolve, _) => setTimeout resolve, ms;
+
 	clipText: (text) ->
 		if navigator.clipboard
 			navigator.clipboard.writeText text
