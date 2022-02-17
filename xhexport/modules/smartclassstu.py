@@ -38,8 +38,8 @@ def build():
         dict(
             **task[i[0]],
             download_time=i[3],
-            remote_url=i[2][:-2],
             type=int(i[4]),
+            remote_url=i[2][:-2],
             local_path=i[6],
         ) for i in select(db, 'resourceinfo') if i[0] in task
     ]
@@ -47,6 +47,15 @@ def build():
         key=lambda x: x['download_time'],
         reverse=True,
     )
+
+    local_prefix = 'xuehai/5017/filebases/com.xh.smartclassstu/' + \
+                    str(config.userid) + '/ztktv4_resource/'
+    for e in resource:
+        if e['type'] == 6:
+            basename = path.basename(e['remote_url'])[:-3]
+            e['local_path'] = local_prefix + basename + e['local_path']
+        elif e['type'] == 8:
+            e['local_path'] = local_prefix + path.basename(e['remote_url'])
 
     write_result('smartclassstu/task_detail.json',
                  json.dumps(task, ensure_ascii=False))

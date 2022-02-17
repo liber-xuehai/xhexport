@@ -11,5 +11,14 @@ window.Element =
 			html += '</tr>'
 		html += '</tbody></table>'
 
+	Link: (text, href) ->
+		'<a href="' + href + '"' + '>' + text + '</a>'
+
+	LinkButton: (text, href) ->
+		'<a class="button" href="' + href + '"' + '>' + text + '</a>'
+
+	NewPageLinkButton: (text, href) ->
+		'<a class="button" href="' + href + '"' + ' target="_blank">' + text + '</a>'
+
 	Button: (text, onclick='') ->
-		'<button onclick="' + onclick.replace('"', '&quot;') + '">' + text + '</button>'
+		'<button class="button" onclick="' + onclick.replace('"', '&quot;') + '">' + text + '</button>'

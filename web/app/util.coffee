@@ -1,9 +1,38 @@
 window.Util =
+	Date:
+		format: (clock, pattern) ->
+			date = new Date(clock)
+			o =
+				"M+": date.getMonth() + 1,
+				"d+": date.getDate(),
+				"h+": date.getHours(),
+				"m+": date.getMinutes(),
+				"s+": date.getSeconds(),
+				"q+": Math.floor((date.getMonth() + 3) / 3),
+				"S": date.getMilliseconds(),
+			if /(y+)/.test pattern
+				pattern = pattern.replace RegExp.$1, (date.getFullYear() + "").substr 4 - RegExp.$1.length
+			for [k, v] in Object.entries o
+				if new RegExp("(" + k + ")").test pattern
+					pattern = pattern.replace RegExp.$1, if RegExp.$1.length == 1 then v else ("00" + v).substr ("" + v).length
+			pattern
+
+		toDate: (clock) ->
+			Util.Date.format clock, 'yyyy-M-d hh:mm:ss'
+
+		toShortDate: (clock) ->
+			Util.Date.format clock, 'yy/MM/dd hh:mm'
+
+		toChineseDate: (clock) ->
+			Util.Date.format clock, 'yyyy年M月d日 hh:mm:ss'
+
+
 	Base64:
 		encode: (string) ->
 			window.btoa unescape encodeURIComponent string
 		decode: (string) -> 
 			decodeURIComponent escape window.atob string
+
 
 	sleep: (ms) -> 
 		new Promise (resolve, _) => setTimeout resolve, ms;
