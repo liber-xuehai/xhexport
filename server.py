@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, abort, send_from_directory
 
 app = Flask(__name__)
 
@@ -13,13 +13,17 @@ def get_xuehai(path):
 
 @app.route('/<path:path>')
 def get_web(path):
-    rsp = send_from_directory('web', path)
+    if not path.startswith('frontend/'):
+        abort(404)
+    print(path[9:])
+    rsp = send_from_directory('frontend', path[9:])
     rsp.cache_control.max_age = 3000
     return rsp
 
 @app.route('/')
+@app.route('/index.html')
 def get_index():
-    return send_from_directory('web', 'index.html')
+    return send_from_directory('.', 'index.html')
 
 
 app.run()
