@@ -32,7 +32,7 @@ window.Router = new class
 			found = true
 			progressBar = progressJs('#progressBar').start()
 			progressBar.set 16
-			progressBar.autoIncrease 4, 120
+			progressBar.autoIncrease 4, 200
 			Data.current = null
 			result = await render ...args
 			console.log result
