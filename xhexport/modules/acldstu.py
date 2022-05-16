@@ -31,7 +31,7 @@ def build():
 
         download_bean = {i[0]: i[1] for i in select(db, 'DOWNLOAD_FILE_BEAN') if i[2] == 2}
         if download_bean != {}:
-            path_start = list(download_bean.values())[0].index('com.xh.acldstu')
+            path_start = list(download_bean.values())[0].index(package_name)
             path_start -= len(f'xuehai/{config.school_id}/filebases/')
         else:
             path_start = 0

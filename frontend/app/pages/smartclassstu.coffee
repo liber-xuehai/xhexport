@@ -22,9 +22,10 @@ Router.register '/smartclassstu', ->
 			col.name,
 			Util.Date.toShortDate(col.create_time),
 			Util.Date.toShortDate(col.download_time),
+			col.user_id,
 			col.type,
 			actions.join ' '
 		]
 
 	title: '云课堂'
-	html: Element.Table ['#', '名称', '创建时间', '下载时间', '类型', '动作'], table
+	html: Element.Table ['#', '名称', '创建时间', '下载时间', '用户', '类型', '动作'], table

@@ -36,19 +36,27 @@ def build():
                for i in select(db, 'SESSION')},
         }
 
-        message = [dict(
-            id=i[0],
-            type=i[5],
-            sender=session[int(i[1])]['name'],
-            sender_id=int(i[1]),
-            receiver=session[int(user_id)]['name'],
-            receiver_id=int(user_id),
-            session=session[int(i[2])]['name'],
-            session_id=int(i[2]),
-            session_type=session[int(i[2])]['type'],
-            content=i[6],
-            created_time=i[7],
-        ) for i in select(db, 'CHAT_MSG')]
+        message = []
+        for i in select(db, 'CHAT_MSG'):
+            current = dict(
+                id=i[0],
+                type=i[5],
+                sender=session[int(i[1])]['name'],
+                sender_id=int(i[1]),
+                session=session[int(i[2])]['name'],
+                session_id=int(i[2]),
+                session_type=session[int(i[2])]['type'],
+                content=i[6],
+                created_time=i[7],
+            )
+            if current['session_type'] == 'SINGLE':
+                if current['session_id'] in general_session and current['sender_id'] != int(user_id):
+                    continue
+                message.append(current)
+            elif current['session_type'] == 'GROUP':
+                if current['session_id'] in general_session:
+                    continue
+                message.append(current)
 
         general_session.update(session)
         general_message.extend(message)

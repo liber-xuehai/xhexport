@@ -18,7 +18,7 @@
 1. 执行 `python server.py`（推荐）
 2. 或者使用任意 Simple HTTP Server 工具，以项目目录为根目录启动服务
 
-### Feature
+### Features
 
 - [x] 响应数据导出
 - [x] 云课堂数据导出

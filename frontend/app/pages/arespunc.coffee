@@ -49,6 +49,6 @@ Router.register '/arespunc/*', (session_id) ->
 			]
 
 	title: session_id + ' - 云作业'
-	html: $ Element.Table ['#', '发送人', '发送时间', '内容'], table
+	html: $ Element.Table ['#', '发送人', '时间', '内容'], table
 		.attr 'id', 'arespunc-message-list'
 		.prop 'outerHTML'
