@@ -49,13 +49,11 @@ def build():
             remote_url=i[2],
             local_path=download_bean[i[2]][path_start:] if i[2] in download_bean else '',
         ) for i in select(db, 'xh_yzy_student_work_list')]
-        homework.sort(
-            key=lambda x: x['create_time'],
-            reverse=True,
-        )
 
         general_homework.extend(homework)
 
+    general_homework.sort(key=lambda x: x['create_time'], reverse=True)
+
     log('write to result json')
-    fs.write(json.dumps(dictionary, ensure_ascii=False), config.result_root, 'acldstu/dictionary.json')
-    fs.write(json.dumps(general_homework, ensure_ascii=False), config.result_root, 'acldstu/homework.json')
+    fs.write(config.result_root, 'acldstu/dictionary.json', content=json.dumps(dictionary, ensure_ascii=False))
+    fs.write(config.result_root, 'acldstu/homework.json', content=json.dumps(general_homework, ensure_ascii=False))

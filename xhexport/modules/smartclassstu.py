@@ -21,7 +21,7 @@ def build():
     log = logger(package_name)
     general_task = {}
     general_resource = []
-    
+
     for user_id in config.user_id:
         db_path = fs.join(config.general_db_root, package_name, user_id, 'ztkt_stu_v4.db')
         if fs.access(db_path)['type'] == 'none':
@@ -49,10 +49,6 @@ def build():
             remote_url=i[2][:-2],
             local_path=i[6],
         ) for i in select(db, 'resourceinfo') if i[0] in task]
-        resource.sort(
-            key=lambda x: x['download_time'],
-            reverse=True,
-        )
 
         local_prefix = f'xuehai/{config.school_id}/filebases/{package_name}/{user_id}/ztktv4_resource/'
         for e in resource:
@@ -65,9 +61,11 @@ def build():
         general_task.update(task)
         general_resource.extend(resource)
 
+    general_resource.sort(key=lambda x: x['download_time'], reverse=True)
+
     log('write to result json')
-    fs.write(json.dumps(general_task, ensure_ascii=False), config.result_root, 'smartclassstu/task_detail.json')
-    fs.write(json.dumps(general_resource, ensure_ascii=False), config.result_root, 'smartclassstu/resource.json')
+    fs.write(config.result_root, 'smartclassstu/task_detail.json', content=json.dumps(general_task, ensure_ascii=False))
+    fs.write(config.result_root, 'smartclassstu/resource.json', content=json.dumps(general_resource, ensure_ascii=False))
 
 
 def export(data):

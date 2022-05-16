@@ -3,7 +3,7 @@
 import sys
 import json
 from base64 import b64decode
-from xhexport.modules import  smartclassstu
+from xhexport.modules import smartclassstu
 
 if len(sys.argv) != 3:
     print('参数错误')

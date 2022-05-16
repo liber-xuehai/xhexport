@@ -29,14 +29,24 @@ class FileSystem:
                     'type': 'file',
                 }
 
-    def write(self, content, *args):
+    def read(self, *args, **kwargs):
         p = self.join(*args)
         if is_remote_url(p):
             return NOT_SUPPORTED
         else:
             self.makedirs(path.dirname(p))
-            with open(p, 'w+', encoding='utf-8') as file:
-                file.write(content)
+            with open(p, 'r+', encoding=kwargs.get('encoding', 'utf-8')) as file:
+                content = file.read()
+            return content
+
+    def write(self, *args, **kwargs):
+        p = self.join(*args)
+        if is_remote_url(p):
+            return NOT_SUPPORTED
+        else:
+            self.makedirs(path.dirname(p))
+            with open(p, 'w+', encoding=kwargs.get('encoding', 'utf-8')) as file:
+                file.write(kwargs.get('content', ''))
 
     def makedirs(self, *args):
         p = self.join(*args)
