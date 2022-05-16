@@ -1,15 +1,14 @@
 import json
 import time
-from os import path
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from pptx import Presentation
 from pptx.util import Inches
-from xhexport import config
-from xhexport.utils import logger
+from xhexport import fs, config
+from xhexport.utils.log import logger
 
-log = logger('export-ppt')
+log = logger('ppt-exporter')
 
 chrome_options = Options()
 chrome_options.add_argument('--headless')
@@ -41,8 +40,7 @@ def goto_page(driver, page):
 
 
 def export_per_page(html_path, dist_path):
-    driver = webdriver.Chrome(executable_path=config.chrome_driver,
-                              chrome_options=chrome_options)
+    driver = webdriver.Chrome(executable_path=config.chrome_driver, chrome_options=chrome_options)
     driver.get("file://" + html_path)
 
     time.sleep(3)
@@ -60,8 +58,7 @@ def export_per_page(html_path, dist_path):
     ppt = Presentation()
 
     for page in range(1, total_page + 1):
-        img_path = path.abspath(path.join(path.dirname(dist_path), \
-                                          './screen-%03d.png' % page))
+        img_path = fs.join(dist_path, './screen-%03d.png' % page)
         log(f'保存第 {page}/{total_page} 页到', img_path)
         goto_page(driver, page)
         driver.save_screenshot(img_path)
