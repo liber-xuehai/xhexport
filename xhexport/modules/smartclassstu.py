@@ -65,6 +65,7 @@ def build():
         general_task.update(task)
         general_resource.extend(resource)
 
+    log('write to result json')
     fs.write(json.dumps(general_task, ensure_ascii=False), config.result_root, 'smartclassstu/task_detail.json')
     fs.write(json.dumps(general_resource, ensure_ascii=False), config.result_root, 'smartclassstu/resource.json')
 
