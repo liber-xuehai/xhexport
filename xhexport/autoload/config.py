@@ -1,35 +1,30 @@
 import yaml
-from os import path, listdir
-
-
-def get_rootdir() -> str:
-    return path.abspath(path.join(path.dirname(__file__), '../../xuehai'))
-
-
-def get_distdir() -> str:
-    return path.abspath(path.join(path.dirname(__file__), '../../data'))
-
-
-def get_userid(rootdir) -> int:
-    packages = listdir(path.join(rootdir, '5017/databases'))
-    for package in packages:
-        current = listdir(path.join(rootdir, '5017/databases', package))
-        if len(current):
-            return int(current[0])
+from os import path
+from xhexport.utils.file import is_remote_url, join_path, parse_path, CONFIG_PATH
 
 
 class Config:
+
     def __init__(self):
-        self.rootdir = get_rootdir()
-        self.distdir = get_distdir()
-        self.userid = get_userid(self.rootdir)
+        with open(CONFIG_PATH, 'r+', encoding='utf-8') as file:
+            data = yaml.load(file.read(), Loader=yaml.SafeLoader)
 
-        file = open(path.join(path.dirname(__file__), '../../config.yml'),
-                    'r+')
-        data = yaml.load(file.read(), Loader=yaml.SafeLoader)
-        file.close()
+        self._is_remote_url = is_remote_url
+        self._join_path = join_path
 
-        self.chrome_driver = data['chrome_driver']
+        self.chrome = data.get('chrome', None)
+        self.chrome_driver = data.get('chrome_driver', None)
+
+        self.school_id = data.get('school_id')
+        self.user_id = []
+
+        self.source_root = parse_path(data.get('source_root'))
+        self.result_root = parse_path(data.get('result_root'))
+
+        self.general_db_root = join_path([self.source_root, '0', 'databases'])
+        self.general_file_root = join_path([self.source_root, '0', 'filebases'])
+        self.school_db_root = join_path([self.source_root, self.school_id, 'databases'])
+        self.school_file_root = join_path([self.source_root, self.school_id, 'filebases'])
 
 
 config = Config()

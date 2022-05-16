@@ -1,1 +1,4 @@
-chrome_driver: C:\path\to\your\chromedriver.exe
+source_root: ./xuehai
+result_root: ./data
+school_id: 0
+chrome_driver: C:\path\to\your\chromedriver.exe   # 选填项，若不配置无法导出ppt

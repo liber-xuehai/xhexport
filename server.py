@@ -18,7 +18,7 @@ def get_web(path):
     if not path.startswith('frontend/'):
         abort(404)
     rsp = send_from_directory('frontend', path[9:])
-    rsp.headers['Cache-Control'] = 'max-age=3000'
+    # rsp.headers['Cache-Control'] = 'max-age=3000'
     return rsp
 
 

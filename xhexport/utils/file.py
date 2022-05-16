@@ -1,33 +1,25 @@
-import os
 from os import path
-from xhexport import config
 
-rootdir = config.rootdir
-distdir = config.distdir
-
-
-def locate(abspath):
-    return path.abspath(path.join(rootdir, abspath))
+PROJECT_ROOT = path.join(path.dirname(__file__), '../..')
+CONFIG_PATH = path.join(PROJECT_ROOT, './config.yml')
 
 
-def locate_db(abspath):
-    return locate(path.join('./5017/databases', abspath))
+def is_remote_url(p):
+    if p.startswith('https://') or p.startswith('http://') or p.startswith('ftp://'):
+        return True
+    else:
+        return False
 
 
-def locate_file(abspath):
-    return locate(path.join('./5017/filebases', abspath))
+def join_path(args):
+    if is_remote_url(args[0]):
+        return None  # !!TODO!!
+    else:
+        return path.abspath(path.join(*map(str, args)))
 
 
-def makedirs(name):
-    try:
-        os.makedirs(name)
-    except FileExistsError:
-        pass
-
-
-def write_result(abspath, content):
-    target = path.abspath(path.join(distdir, abspath))
-    makedirs(path.dirname(target))
-    file = open(target, 'w+', encoding='utf-8')
-    file.write(content)
-    file.close()
+def parse_path(p):
+    if is_remote_url(p):
+        return p
+    else:
+        return path.abspath(path.join(PROJECT_ROOT, p))

@@ -1,5 +1,7 @@
-from xhexport.modules import arespunc, smartclassstu, acldstu
+from xhexport import config
+# from xhexport.modules import arespunc, smartclassstu, acldstu
+from xhexport.modules import smartclassstu
 
-arespunc.build()
+# arespunc.build()
 smartclassstu.build()
-acldstu.build()
+# acldstu.build()
