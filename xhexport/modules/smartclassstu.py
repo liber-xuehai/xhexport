@@ -7,6 +7,7 @@ from colorama import Fore
 from xhexport import fs, config
 from xhexport.utils.log import logger
 from xhexport.utils.sql import select
+from xhexport.utils.func import combine_same_origin_items
 from xhexport.methods.ppt_exporter import export_per_page as export_ppt
 
 name = '云课堂'
@@ -62,6 +63,7 @@ def build():
         general_resource.extend(resource)
 
     general_resource.sort(key=lambda x: x['download_time'], reverse=True)
+    general_resource = combine_same_origin_items(general_resource)
 
     log('write to result json')
     fs.write(config.result_root, 'smartclassstu/task_detail.json', content=json.dumps(general_task, ensure_ascii=False))

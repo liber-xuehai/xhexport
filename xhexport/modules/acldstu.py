@@ -5,6 +5,7 @@ import sqlite3
 from xhexport import fs, config
 from xhexport.utils.log import logger
 from xhexport.utils.sql import select
+from xhexport.utils.func import combine_same_origin_items
 
 name = '云作业'
 package_name = 'com.xh.acldstu'
@@ -53,6 +54,7 @@ def build():
         general_homework.extend(homework)
 
     general_homework.sort(key=lambda x: x['create_time'], reverse=True)
+    general_homework = combine_same_origin_items(general_homework)
 
     log('write to result json')
     fs.write(config.result_root, 'acldstu/dictionary.json', content=json.dumps(dictionary, ensure_ascii=False))

@@ -1,18 +1,19 @@
-html {
-  --text-color: #black;
-  word-break: break-word;
-  word-wrap: break-word;
+:root {
+  --text-color: black;
 }
 
-html {
-  overflow-y: scroll;
-}
 :root {
   overflow-y: auto;
   overflow-x: hidden;
 }
 :root body {
   position: absolute;
+}
+html {
+  word-break: break-word;
+  word-wrap: break-word;
+  overflow-y: scroll;
+  font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
 }
 body {
   color: var(--text-color);
@@ -78,6 +79,21 @@ table td > p:last-child {
   width: 100%;
   max-width: 1020px;
   margin: auto;
+}
+
+#acldstu-list > tbody > tr > td:nth-child(2) {
+  min-width: 60px;
+  text-align: center;
+}
+#acldstu-list > tbody > tr > td:nth-last-child(1) {
+  min-width: 80px;
+}
+#acldstu-list > tbody > tr > td:nth-last-child(2),
+#acldstu-list > tbody > tr > td:nth-last-child(3) {
+  min-width: 120px;
+}
+#acldstu-list > tbody > tr > td:nth-last-child(4) {
+  min-width: 40px;
 }
 
 #acldstu-homework > tbody > tr > td:nth-child(1) {

@@ -17,12 +17,15 @@ Router.register '/smartclassstu', ->
 			command = 'python export.py ykt ' + base64
 			actions.push Element.Button '导出指令', 'window.Util.clipText(\'' + command + '\')'
 
+		user_id = String col.user_id
+		if col.user_extended and col.user_extended.length
+			user_id += '(+' + col.user_extended.length + ')'
 		table.push [
 			++index,
 			col.name,
 			Util.Date.toShortDate(col.create_time),
 			Util.Date.toShortDate(col.download_time),
-			col.user_id,
+			user_id,
 			col.type,
 			actions.join ' '
 		]

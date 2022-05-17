@@ -7,6 +7,9 @@ Router.register '/acldstu', ->
 		linkedName = col.name
 		if col.local_path
 			linkedName = Element.Link col.name, '#acldstu/' + col.local_path.replace /\//g, ','
+		user_id = String col.user_id
+		if col.user_extended and col.user_extended.length
+			user_id += '(+' + col.user_extended.length + ')'
 		table.push [
 			++index,
 			col.subject,
@@ -14,10 +17,13 @@ Router.register '/acldstu', ->
 			col.score.toFixed(),
 			Util.Date.toShortDate(col.create_time),
 			Util.Date.toShortDate(col.update_time),
+			user_id
 		]
 
 	title: '云作业'
-	html: Element.Table ['#', '学科', '名称', '分数', '创建时间', '更新时间'], table
+	html: $ Element.Table ['#', '学科', '名称', '分数', '创建时间', '更新时间', '用户'], table
+		.attr 'id', 'acldstu-list'
+		.prop 'outerHTML'
 
 
 Router.register '/acldstu/*', (path) ->
