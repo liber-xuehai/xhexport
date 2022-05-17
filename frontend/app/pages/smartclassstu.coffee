@@ -14,7 +14,7 @@ Router.register '/smartclassstu', ->
 		if col.type is 5
 			plain = JSON.stringify col
 			base64 = Util.Base64.encode plain
-			command = 'python export.py ykt ' + base64
+			command = 'python xuehai.py export ykt ' + base64
 			actions.push Element.Button '导出指令', 'window.Util.clipText(\'' + command + '\')'
 
 		user_id = String col.user_id
