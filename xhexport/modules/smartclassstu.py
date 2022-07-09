@@ -8,7 +8,6 @@ from xhexport import fs, config
 from xhexport.utils.log import logger
 from xhexport.utils.sql import select
 from xhexport.utils.func import combine_same_origin_items
-from xhexport.methods.ppt_exporter import export_per_page as export_ppt
 
 name = '云课堂'
 package_name = 'com.xh.smartclassstu'
@@ -71,6 +70,7 @@ def build():
 
 
 def export(data):
+    from xhexport.methods.ppt_exporter import export_per_page as export_ppt
     log = logger(package_name + ' export')
     if data['type'] == 5:
         log('导出课程', Fore.MAGENTA + data['id'] + Fore.RESET, '课件', Fore.MAGENTA + data['name'] + Fore.RESET)
