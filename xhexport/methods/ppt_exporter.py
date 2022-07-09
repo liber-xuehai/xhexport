@@ -1,5 +1,6 @@
 import json
 import time
+from os import path
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -58,7 +59,7 @@ def export_per_page(html_path, dist_path):
     ppt = Presentation()
 
     for page in range(1, total_page + 1):
-        img_path = fs.join(dist_path, './screen-%03d.png' % page)
+        img_path = fs.join(path.dirname(dist_path), 'screen-%03d.png' % page)
         log(f'保存第 {page}/{total_page} 页到', img_path)
         goto_page(driver, page)
         driver.save_screenshot(img_path)

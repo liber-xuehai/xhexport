@@ -74,10 +74,12 @@ def export(data):
     log = logger(package_name + ' export')
     if data['type'] == 5:
         log('导出课程', Fore.MAGENTA + data['id'] + Fore.RESET, '课件', Fore.MAGENTA + data['name'] + Fore.RESET)
-        local_dir = data['remote_url'][:-2].split('/')[-1]
-        real_path = fs.join(config.school_file_root, package_name, data['user_id'], 'ztktv4_resource', local_dir, data["local_path"])
+        local_dir = data['remote_url'][:-3].split('/')[-1]
+        local_path = data["local_path"] if not data["local_path"].startswith('/') else data["local_path"][1:]
+        real_path = fs.join(config.school_file_root, package_name, data['user_id'], 'ztktv4_resource', local_dir, local_path)
         dist_path = fs.join(config.result_root, 'export', f'smartclass-{data["id"]}', f'{data["name"]}.pptx')
         fs.makedirs(path.dirname(dist_path))
+        print(real_path)
         export_ppt(real_path, dist_path)
     else:
         raise SmartClassExportError('不支持的类型')
