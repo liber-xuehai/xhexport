@@ -11,7 +11,9 @@ window.Element =
 			html += '</tr>'
 		html += '</tbody></table>'
 
-	Link: (text, href) ->
+	Link: (text, href, params = {}) ->
+		if params != {}
+			href += '?' + Object.entries(params).map((x) => (x[0] + '=' + x[1])).join('&')
 		'<a href="' + href + '"' + '>' + text + '</a>'
 
 	LinkButton: (text, href) ->

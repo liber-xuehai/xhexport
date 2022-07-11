@@ -1,3 +1,10 @@
+parseHomework = (url) ->
+	args = url.split('/')
+	school: args[1]
+	student: args[4]
+	teacher: args[5]
+	file: args[6]
+
 Router.register '/acldstu', ->
 	data = await Data.fetch '/data/acldstu/homework.json'
 	table = Data.current = []
@@ -6,7 +13,7 @@ Router.register '/acldstu', ->
 	for col in data
 		linkedName = col.name
 		if col.local_path
-			linkedName = Element.Link col.name, '#acldstu/' + col.local_path.replace /\//g, ','
+			linkedName = Element.Link(col.name, '#acldstu/homework', parseHomework(col.local_path))
 		user_id = String col.user_id
 		if col.user_extended and col.user_extended.length
 			user_id += '(+' + col.user_extended.length + ')'
@@ -26,8 +33,9 @@ Router.register '/acldstu', ->
 		.prop 'outerHTML'
 
 
-Router.register '/acldstu/*', (path) ->
-	path = ('/' + path).replace /\,/g,  '/'
+Router.register '/acldstu/homework', ({ params }) ->
+	path = "/xuehai/#{params.school}/filebases/com.xh.acldstu/#{params.student}/#{params.teacher}/#{params.file}"
+	console.log(path)
 	dict = await Data.fetch '/data/acldstu/dictionary.json'
 	data = JSON.parse await Data.fetch path
 	table = Data.current = []

@@ -1,24 +1,23 @@
 Router.register '/arespunc', ->
-	data = await Data.fetch '/data/arespunc/session.json'
+	data = await Data.fetch('/data/arespunc/session.json')
 	table = Data.current = []
 
 	session = []
 	for id, val of data
 		if val.last_update
 			val.id = id
-			session.push val
-	session.sort (a, b) ->
-		b.last_update - a.last_update
+			session.push(val)
+	session.sort((a, b) -> b.last_update - a.last_update)
 
 	for col, index in session
-		table.push [
+		table.push([
 			index + 1,
 			col.type,
 			Element.Link(col.name, '#arespunc/' + col.id),
 			Util.Date.toDate(col.last_update),
-		]
+		])
 
-	title: '云作业'
+	title: '响应'
 	html: Element.Table ['#', '类型', '名称', '更新时间'], table
 
 
