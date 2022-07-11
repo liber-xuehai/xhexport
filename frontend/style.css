@@ -2,6 +2,9 @@
   --text-color: black;
 }
 
+* {
+  box-sizing: border-box;
+}
 :root {
   overflow-y: auto;
   overflow-x: hidden;
@@ -98,10 +101,13 @@ table td > p:last-child {
 
 #acldstu-homework > tbody > tr > td:nth-child(1) {
   min-width: 25px;
+  padding: 5px 4px;
   text-align: center;
 }
+#acldstu-homework > thead > tr > th:nth-child(2),
 #acldstu-homework > tbody > tr > td:nth-child(2) {
-  min-width: 30px;
+  min-width: 40px;
+  padding: 5px 4px;
   text-align: center;
 }
 

@@ -1,5 +1,5 @@
-parseHomework = (url) ->
-	args = url.split('/')
+parseHomeworkUri = (uri) ->
+	args = uri.split('/')
 	school: args[1]
 	student: args[4]
 	teacher: args[5]
@@ -13,7 +13,7 @@ Router.register '/acldstu', ->
 	for col in data
 		linkedName = col.name
 		if col.local_path
-			linkedName = Element.Link(col.name, '#acldstu/homework', parseHomework(col.local_path))
+			linkedName = Element.Link(col.name, '#acldstu/homework', parseHomeworkUri(col.local_path))
 		user_id = String col.user_id
 		if col.user_extended and col.user_extended.length
 			user_id += '(+' + col.user_extended.length + ')'

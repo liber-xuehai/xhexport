@@ -52,7 +52,7 @@ def build():
 
         local_prefix = f'xuehai/{config.school_id}/filebases/{package_name}/{user_id}/ztktv4_resource/'
         for e in resource:
-            if e['type'] == 6:
+            if e['type'] in [5, 6]:
                 basename = path.basename(e['remote_url'])[:-3]
                 e['local_path'] = local_prefix + basename + e['local_path']
             elif e['type'] == 8:

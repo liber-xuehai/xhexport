@@ -2,6 +2,7 @@ window.Router = new class
 	constructor: ->
 		window.onhashchange = => @reload()
 		@hashMap = {}
+		@currentPage = null
 
 	register: (route, render) ->
 		@hashMap[route] = render
@@ -42,18 +43,22 @@ window.Router = new class
 			progressBar.set(16)
 			progressBar.autoIncrease(4, 200)
 			Data.current = null
-			result = await render(...args)
-			console.log(result)
-			$("#container").html(result.html)
-			if result.title
-				$('title').html(result.title + ' - OpenXueHai')
+			@currentPage = await render(...args)
+			console.log(@currentPage)
+			$("#container").html(@currentPage.html)
+			if @currentPage.title
+				$('head>title').html(@currentPage.title + ' - OpenXueHai')
 			else
-				$('title').html('OpenXueHai')
+				$('head>title').html('OpenXueHai')
 			progressBar.set(92)
-			if result.onLoad
-				result.onLoad($('#container'))
+			if @currentPage.onLoad
+				@currentPage.onLoad($('#container'))
 			await Util.sleep(300)
 			progressBar.end()
 
 		if not found
 			$('#container').html('404 Not Found')
+
+window.onresize = ->
+	if window.Router.currentPage and window.Router.currentPage.onWindowResize
+		window.Router.currentPage.onWindowResize()
