@@ -37,6 +37,16 @@ window.Util =
 	sleep: (ms) -> 
 		new Promise (resolve, _) => setTimeout resolve, ms;
 
+	unique: (array) ->
+		if not Array.isArray(array)
+			throw new Error('Util.unique: is not array like object')
+		array = array.sort()
+		result = [array[0]]
+		for i in [1...array.length]
+			if array[i] != array[i - 1]
+				result.push(array[i])
+		return result
+
 	clipText: (text) ->
 		if navigator.clipboard
 			navigator.clipboard.writeText text

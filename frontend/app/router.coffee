@@ -22,7 +22,6 @@ window.Router = new class
 
 		for routeHash, render of @hashMap
 			route = routeHash.split('/').slice(1)
-
 			if route.length isnt location.length
 				continue
 			args = []
@@ -32,10 +31,8 @@ window.Router = new class
 				else if route[i] != location[i]
 					args = false
 					break
-			
 			if args is false
 				continue
-
 			args.push({ params })
 
 			found = true
@@ -43,13 +40,23 @@ window.Router = new class
 			progressBar.set(16)
 			progressBar.autoIncrease(4, 200)
 			Data.current = null
+
+			# render
 			@currentPage = await render(...args)
 			console.log(@currentPage)
-			$("#container").html(@currentPage.html)
+			
+			# style
+			if not @currentPage.style
+				@currentPage.style = ''
+			$('#scoped-style').html(@currentPage.style)
+			# title
 			if @currentPage.title
 				$('head>title').html(@currentPage.title + ' - OpenXueHai')
 			else
 				$('head>title').html('OpenXueHai')
+			# body
+			$("#container").html(@currentPage.html)
+			
 			progressBar.set(92)
 			if @currentPage.onLoad
 				@currentPage.onLoad($('#container'))
