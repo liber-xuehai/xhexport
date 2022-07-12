@@ -5,6 +5,12 @@ parseSlideUri = (uri) ->
 	class: args[6]
 	file: args[8]
 
+createCallbackElement = (text, callback) ->
+	e = document.createElement('a')
+	e.innerHTML = text
+	e.onclick = callback
+	return e
+
 Router.register '/smartclassstu', ->
 	data = await Data.fetch('/data/smartclassstu/resource.json')
 	table = Data.current = []
@@ -46,14 +52,16 @@ Router.register '/smartclassstu', ->
 	html: Element.Table(['#', '名称', '创建时间', '下载时间', '用户', '类型'], table)
 
 Router.register '/smartclassstu/slideViewer', ({ params })->
-	path = if params.src then params.src else "/xuehai/#{params.school}/filebases/com.xh.smartclassstu/#{params.student}/ztktv4_resource/#{params.class}/ppt/#{params.file}/index.html"
-	pathDir = path.slice(0, -11)
-	console.log(pathDir)
 	$slides = null
 	$iframe = null
 	$window = null
 	width = 720
 	height = 540
+
+	path = if params.src then params.src else "/xuehai/#{params.school}/filebases/com.xh.smartclassstu/#{params.student}/ztktv4_resource/#{params.class}/ppt/#{params.file}/index.html"
+	pathDir = path.slice(0, -11)
+	if not pathDir.startsWith(location.origin)
+		pathDir = location.origin + pathDir
 
 	updateShape = ->
 		$iframe.height($iframe.width() / width * height)
@@ -77,6 +85,50 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 
 	slideJumpToPage = (page) ->
 		$window.bE(page - 1)
+		
+	exportBlobLink = ->
+		html = '
+			<!DOCTYPE html>
+			<html lang="zh-Hans">
+				<style>
+					* { box-sizing: border-box; }
+					body { margin: 0px !important; }
+					::-webkit-scrollbar { width: 5px; height: 5px; }
+					::-webkit-scrollbar-thumb { border-radius: 1em; background-color: rgba(50, 50, 50, .3); }
+					::-webkit-scrollbar-track { border-radius: 1em; background-color: rgba(50, 50, 50, .1); }
+					#slides>article { page-break-after: always; border: none !important; }
+					#slides>article:not(:first-child) { border-top: 1px solid black !important; }
+					@media print { #slides>article:not(:first-child) { border-top: none !important; } }
+				</style>
+				<script>
+					function reshape() {
+						let contentWidth = window.innerWidth;
+						let contentScale = contentWidth / window.slideWidth;
+						let contentHeight = contentScale * window.slideHeight;
+						Array.from(document.getElementById("slides").children).forEach(function (element) {
+							element.style.width = contentWidth;
+							element.style.height = contentHeight;
+							element.style.zoom = contentScale;
+						})
+					}
+					window.slideWidth = ' + width + ';
+					window.slideHeight = ' + height + ';
+					document.onload = reshape;
+					window.onresize = reshape;
+					let identifier = setInterval(function () { 
+						if (document.getElementById("slides").children.length) {
+							clearInterval(identifier);
+							reshape();
+						}
+					}, 250);
+				</script>
+				<style>' + $('#scoped-style').html() + '</style>
+				<body>' + $('#slides')[0].outerHTML + '</body>
+			</html>
+		'
+		blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+		link = URL.createObjectURL(blob);
+		window.open(link, 'target', '')
 
 	main = ->
 		console.log('[slide-viewer] main', $window._XH.actionList)
@@ -102,7 +154,6 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 			$slides.append("<article id=\"slide-page-#{page}\">#{html}</article>")
 			if html.match(/fnt\d+/)
 				familySet = Util.unique([...familySet, ...html.match(/fnt\d+/g)])
-				console.log(familySet, ...html.match(/fnt\d+/g))
 
 		fontStyle = ''
 		for family in familySet
@@ -110,22 +161,26 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 		# console.log('[slide-viewer]', 'font-style', familySet, fontStyle)
 		$('#scoped-style').html($('#scoped-style').html() + fontStyle)
 
-		updateShape()
-		$('#slides-loading').hide()
+		$('#viewer-action').append(createCallbackElement('Export', exportBlobLink))
 
+		updateShape()
+		$('#viewer-loading').hide()
+	
 	title: '幻灯片 ' + params.file
 	html: "
 		<div id=\"slide-viewer\">
-			<div id=\"slides-loading\">Slide is loading...</div>
+			<div id=\"viewer-action\"></div>
+			<div id=\"viewer-loading\">Slide is loading...</div>
 			<div id=\"slides\"></div>
 			<iframe id=\"slide-iframe\" src=\"#{path}\" style=\"width:100%\">Your browser does not support iframes.</iframe>
 		</div>
 	"
 	style: "
-		#slide-viewer { max-width: 802px; margin: auto; }
-		#slide-iframe { display: none; }
 		#slides>article { position: relative; overflow: hidden; border: 1px solid black; }
 		#slides>article:not(:first-child) { border-top: none; }
+		#slide-viewer { max-width: 802px; margin: auto; }
+		#slide-iframe { display: none; }
+		#viewer-action { margin-bottom: 10px; }
 		/* default style */
 		#slides {
 			-webkit-text-size-adjust: auto;
