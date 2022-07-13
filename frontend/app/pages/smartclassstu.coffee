@@ -6,7 +6,7 @@ parseSlideUri = (uri) ->
 	file: args[8]
 
 createCallbackElement = (text, callback) ->
-	e = document.createElement('a')
+	e = document.createElement('button')
 	e.innerHTML = text
 	e.onclick = callback
 	return e
@@ -57,6 +57,8 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 	$window = null
 	width = 720
 	height = 540
+	counter = 0
+	lastClipboard = null
 
 	path = if params.src then params.src else "/xuehai/#{params.school}/filebases/com.xh.smartclassstu/#{params.student}/ztktv4_resource/#{params.class}/ppt/#{params.file}/index.html"
 	pathDir = path.slice(0, -11)
@@ -72,6 +74,11 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 			$slides.children().width(width)
 			$slides.children().height(height)
 			$slides.children().css('zoom', contentScale)
+
+	checkLoaded = ->
+		if not counter
+			$('#viewer-loading').hide()
+		console.log('[slide-viewer] checkLoaded', "counter=#{counter}")
 	
 	slideSimulateClick = (times) ->
 		for _ in [1..times]
@@ -86,7 +93,7 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 	slideJumpToPage = (page) ->
 		$window.bE(page - 1)
 		
-	exportBlobLink = ->
+	actionExportAsHtml = ->
 		html = '
 			<!DOCTYPE html>
 			<html lang="zh-Hans">
@@ -129,6 +136,13 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 		blob = new Blob([html], {type: 'text/html;charset=utf-8'});
 		link = URL.createObjectURL(blob);
 		window.open(link, 'target', '')
+	
+	actionPrintToPdf = ->
+		console.log('[slide-viewer]', pdf)
+		printJS(
+			printable: 'slides'
+			type: 'html'
+		)
 
 	main = ->
 		console.log('[slide-viewer] main', $window._XH.actionList)
@@ -152,6 +166,34 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 			html = $window.document.querySelector("#root>#main>#s#{page - 1}").innerHTML
 			html = html.replace(/ src="(.*?)"/g, ' src="' + pathDir + '/$1"')
 			$slides.append("<article id=\"slide-page-#{page}\">#{html}</article>")
+			walkBy = (element) ->
+				# console.log(element.tagName, element)
+				if not element
+					return false
+				if element.tagName == 'IMG'
+					element.setAttribute('draggable', 'false')
+					counter += 1
+					fetch(element.src)
+						.then((response) => response.blob())
+						.then((blob) => new Promise((resolve, reject) =>
+							reader = new FileReader()
+							reader.onloadend = () => resolve(reader.result)
+							reader.onerror = reject
+							reader.readAsDataURL(blob)
+						))
+						.then((base64) =>
+							element.src = base64
+							counter -= 1
+							checkLoaded()
+						)
+				if element.tagName == 'CANVAS' and element.style.visibility == 'hidden'
+					return element.remove()
+				# if element.style.height == '0px' and element.style.width == '0px'
+				# 	return element.remove()
+				for child in element.children
+					walkBy(child)
+				return true
+			walkBy(document.getElementById("slide-page-#{page}"))
 			if html.match(/fnt\d+/)
 				familySet = Util.unique([...familySet, ...html.match(/fnt\d+/g)])
 
@@ -161,10 +203,11 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 		# console.log('[slide-viewer]', 'font-style', familySet, fontStyle)
 		$('#scoped-style').html($('#scoped-style').html() + fontStyle)
 
-		$('#viewer-action').append(createCallbackElement('Export', exportBlobLink))
+		$('#viewer-action').append(createCallbackElement('Export as HTML', actionExportAsHtml))
+		$('#viewer-action').append(createCallbackElement('Print to PDF', actionPrintToPdf))
 
 		updateShape()
-		$('#viewer-loading').hide()
+		checkLoaded()
 	
 	title: '幻灯片 ' + params.file
 	html: "
@@ -172,15 +215,16 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 			<div id=\"viewer-action\"></div>
 			<div id=\"viewer-loading\">Slide is loading...</div>
 			<div id=\"slides\"></div>
-			<iframe id=\"slide-iframe\" src=\"#{path}\" style=\"width:100%\">Your browser does not support iframes.</iframe>
+			<iframe id=\"slide-iframe\" src=\"#{path}\">Your browser does not support iframes.</iframe>
 		</div>
 	"
 	style: "
 		#slides>article { position: relative; overflow: hidden; border: 1px solid black; }
 		#slides>article:not(:first-child) { border-top: none; }
 		#slide-viewer { max-width: 802px; margin: auto; }
-		#slide-iframe { display: none; }
-		#viewer-action { margin-bottom: 10px; }
+		#slide-iframe { display: none; width: 100%; }
+		#viewer-action { margin-bottom: 5px; }
+		#viewer-loading { margin-bottom: 5px; }
 		/* default style */
 		#slides {
 			-webkit-text-size-adjust: auto;
@@ -211,5 +255,17 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 				main()
 		, 500)
 		console.log('slide iframe', $iframe)
+	onClipCopy: (event) ->
+		text = document.getSelection().toString()
+		if text and text != lastClipboard
+			event.preventDefault()
+			convertedText = ''
+			for line in text.split(/\n{2,}/)
+				if line[0].match(/\s/) and convertedText != ''
+					convertedText += '\n\n'
+				convertedText += line.trim()
+				# console.log([line, convertedText], line.startsWith(' '), line[0].match(/\s/))
+			event.clipboardData.setData('text/plain', convertedText);
+			lastClipboard = convertedText
 	onWindowResize: ->
 		updateShape()

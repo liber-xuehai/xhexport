@@ -69,3 +69,9 @@ window.Router = new class
 window.onresize = ->
 	if window.Router.currentPage and window.Router.currentPage.onWindowResize
 		window.Router.currentPage.onWindowResize()
+document.addEventListener 'copy', (event) ->
+	if window.Router.currentPage and window.Router.currentPage.onClipCopy
+		window.Router.currentPage.onClipCopy(event)
+document.addEventListener 'paste', (event) ->
+	if window.Router.currentPage and window.Router.currentPage.onClipPaste
+		window.Router.currentPage.onClipPaste(event)
