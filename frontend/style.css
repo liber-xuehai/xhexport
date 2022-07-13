@@ -1,5 +1,7 @@
 :root {
   --text-color: black;
+  --table-padding: 4px 6px;
+  --compressed-table-padding: 4px 4px;
 }
 
 * {
@@ -13,22 +15,22 @@
   position: absolute;
 }
 ::-webkit-scrollbar {
-	width: 5px;
-	height: 5px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-thumb {
-	border-radius: 1em;
-	background-color: rgba(50, 50, 50, .3);
+  border-radius: 1em;
+  background-color: rgba(50, 50, 50, 0.3);
 }
 ::-webkit-scrollbar-track {
-	border-radius: 1em;
-	background-color: rgba(50, 50, 50, .1);
+  border-radius: 1em;
+  background-color: rgba(50, 50, 50, 0.1);
 }
 html {
   word-break: break-word;
   word-wrap: break-word;
   overflow-y: scroll;
-  font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+  font-family: -apple-system, 'Noto Sans', 'Helvetica Neue', Helvetica, 'Nimbus Sans L', Arial, 'Liberation Sans', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', 'Wenquanyi Micro Hei', 'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp', sans-serif;
 }
 body {
   color: var(--text-color);
@@ -50,10 +52,12 @@ table tr {
   line-height: 20px;
 }
 table th {
-  padding: 10px 8px;
+  padding: var(--table-padding);
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 table td {
-  padding: 5px 8px;
+  padding: var(--table-padding);
 }
 table img {
   max-width: 100%;
@@ -96,41 +100,88 @@ table td > p:last-child {
   margin: auto;
 }
 
-#acldstu-list > tbody > tr > td:nth-child(2) {
-  min-width: 60px;
-  text-align: center;
-}
-#acldstu-list > tbody > tr > td:nth-last-child(1) {
-  min-width: 80px;
-}
-#acldstu-list > tbody > tr > td:nth-last-child(2),
-#acldstu-list > tbody > tr > td:nth-last-child(3) {
-  min-width: 120px;
-}
-#acldstu-list > tbody > tr > td:nth-last-child(4) {
-  min-width: 40px;
-}
-
-#acldstu-homework > tbody > tr > td:nth-child(1) {
-  min-width: 25px;
-  padding: 5px 4px;
-  text-align: center;
-}
-#acldstu-homework > thead > tr > th:nth-child(2),
-#acldstu-homework > tbody > tr > td:nth-child(2) {
-  min-width: 40px;
-  padding: 5px 4px;
-  text-align: center;
-}
-
+/* 响应 */
 #arespunc-message-list > tbody > tr > td:nth-child(1) {
-  min-width: 25px;
+  width: 25px;
   text-align: center;
 }
 #arespunc-message-list > tbody > tr > td:nth-child(2) {
-  min-width: 50px;
+  width: 60px;
   text-align: center;
+  padding: var(--compressed-table-padding);
 }
 #arespunc-message-list > tbody > tr > td:nth-child(3) {
-  min-width: 120px;
+  width: 120px;
+}
+#arespunc-message-list > tbody > tr > td:nth-child(4) {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+#arespunc-message-list > tbody > tr > td:nth-child(4) > img {
+  width: 100%;
+  margin: auto;
+  max-width: 320px;
+}
+
+/* 云课堂 */
+#smartclassstu-list > tbody > tr > td:nth-child(1) {
+  /* # */
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+#acldstu-list > tbody > tr > td:nth-last-child(2) {
+  /* 用户 */
+  width: 85px;
+  padding: var(--compressed-table-padding);
+}
+#smartclassstu-list > tbody > tr > td:nth-last-child(3),
+#smartclassstu-list > tbody > tr > td:nth-last-child(4) {
+  /* 创建时间 & 更新时间 */
+  width: 110px;
+}
+
+/* 云作业 */
+#acldstu-list > tbody > tr > td:nth-child(1) {
+  /* # */
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+#acldstu-list > tbody > tr > td:nth-child(2) {
+  /* 学科 */
+  width: 70px;
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+#acldstu-list > tbody > tr > td:nth-last-child(1) {
+  /* 用户 */
+  width: 85px;
+  padding: var(--compressed-table-padding);
+}
+#acldstu-list > tbody > tr > td:nth-last-child(2),
+#acldstu-list > tbody > tr > td:nth-last-child(3) {
+  /* 创建时间 & 更新时间 */
+  width: 110px;
+}
+#acldstu-list > thead > tr > th:nth-last-child(4) {
+  /* 分数 */
+  padding: var(--compressed-table-padding);
+}
+#acldstu-list > tbody > tr > td:nth-last-child(4) {
+  /* 分数 */
+  width: 40px;
+  text-align: center;
+}
+
+#acldstu-homework > tbody > tr > td:nth-child(1) {
+  width: 35px;
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+#acldstu-homework > tbody > tr > td:nth-child(2) {
+  width: 45px;
+  text-align: center;
+}
+#acldstu-homework > tbody > tr > td:nth-child(3) {
+  padding-left: 12px;
+  padding-right: 12px;
 }

@@ -58,7 +58,9 @@ Router.register '/smartclassstu', ->
 		]
 
 	title: '云课堂'
-	html: Element.Table(['#', '名称', '创建时间', '下载时间', '用户', '类型'], table)
+	html: $ Element.Table(['#', '名称', '创建时间', '下载时间', '用户', '类型'], table)
+		.attr 'id', 'smartclassstu-list'
+		.prop 'outerHTML'
 
 Router.register '/smartclassstu/slideViewer', ({ params })->
 	$slides = null
