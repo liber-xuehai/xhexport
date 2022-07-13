@@ -12,7 +12,7 @@ window.Element =
 		html += '</tbody></table>'
 
 	Link: (text, href, params = {}) ->
-		if params != {}
+		if Object.keys(params).length
 			href += '?' + Object.entries(params).map((x) => (x[0] + '=' + x[1])).join('&')
 		'<a href="' + href + '"' + '>' + text + '</a>'
 
