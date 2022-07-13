@@ -11,6 +11,15 @@ createCallbackElement = (text, callback) ->
 	e.onclick = callback
 	return e
 
+asyncFetchBase64 = (url) ->
+	fetch(url)
+		.then (response) => response.blob()
+		.then (blob) => new Promise (resolve, reject) =>
+			reader = new FileReader()
+			reader.onloadend = () => resolve(reader.result)
+			reader.onerror = reject
+			reader.readAsDataURL(blob)
+
 Router.register '/smartclassstu', ->
 	data = await Data.fetch('/data/smartclassstu/resource.json')
 	table = Data.current = []
@@ -62,8 +71,8 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 
 	path = if params.src then params.src else "/xuehai/#{params.school}/filebases/com.xh.smartclassstu/#{params.student}/ztktv4_resource/#{params.class}/ppt/#{params.file}/index.html"
 	pathDir = path.slice(0, -11)
-	if not pathDir.startsWith(location.origin)
-		pathDir = location.origin + pathDir
+	# if not pathDir.startsWith(location.origin)
+	# 	pathDir = location.origin + pathDir
 
 	updateShape = ->
 		$iframe.height($iframe.width() / width * height)
@@ -92,11 +101,16 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 
 	slideJumpToPage = (page) ->
 		$window.bE(page - 1)
-		
-	actionExportAsHtml = ->
-		html = '
+
+	exportAsHtml = ->
+		'
 			<!DOCTYPE html>
 			<html lang="zh-Hans">
+				<head>
+					<meta charset="utf-8">
+					<meta name="viewport" content="initial-scale=1, width=device-width">
+					<title>' + document.title + '</title>
+				</head>
 				<style>
 					* { box-sizing: border-box; }
 					body { margin: 0px !important; }
@@ -133,16 +147,27 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 				<body>' + $('#slides')[0].outerHTML + '</body>
 			</html>
 		'
-		blob = new Blob([html], {type: 'text/html;charset=utf-8'});
-		link = URL.createObjectURL(blob);
+		
+	actionExportAsHtml = ->
+		blob = new Blob([exportAsHtml()], {type: 'text/html;charset=utf-8'})
+		link = URL.createObjectURL(blob)
 		window.open(link, 'target', '')
+	
+	actionDownloadAsHtml = ->
+		blob = new Blob([exportAsHtml()], {type: 'text/html;charset=utf-8'})
+		element = document.createElement('a')
+		url = window.URL.createObjectURL(blob)
+		filename = document.title + '.html'
+		element.href = url
+		element.download = filename
+		element.click()
+		window.URL.revokeObjectURL(url)
 	
 	actionPrintToPdf = ->
 		console.log('[slide-viewer]', pdf)
-		printJS(
+		printJS
 			printable: 'slides'
 			type: 'html'
-		)
 
 	main = ->
 		console.log('[slide-viewer] main', $window._XH.actionList)
@@ -160,50 +185,48 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 				lastStatus = currentStatus
 		totalPage = lastStatus[0]
 
-		familySet = []
+		fonts = []
 		for page in [1..totalPage]
 			slideJumpToPage(page)
 			html = $window.document.querySelector("#root>#main>#s#{page - 1}").innerHTML
 			html = html.replace(/ src="(.*?)"/g, ' src="' + pathDir + '/$1"')
 			$slides.append("<article id=\"slide-page-#{page}\">#{html}</article>")
-			walkBy = (element) ->
-				# console.log(element.tagName, element)
-				if not element
-					return false
-				if element.tagName == 'IMG'
-					element.setAttribute('draggable', 'false')
-					counter += 1
-					fetch(element.src)
-						.then((response) => response.blob())
-						.then((blob) => new Promise((resolve, reject) =>
-							reader = new FileReader()
-							reader.onloadend = () => resolve(reader.result)
-							reader.onerror = reject
-							reader.readAsDataURL(blob)
-						))
-						.then((base64) =>
-							element.src = base64
-							counter -= 1
-							checkLoaded()
-						)
-				if element.tagName == 'CANVAS' and element.style.visibility == 'hidden'
-					return element.remove()
-				# if element.style.height == '0px' and element.style.width == '0px'
-				# 	return element.remove()
-				for child in element.children
-					walkBy(child)
-				return true
-			walkBy(document.getElementById("slide-page-#{page}"))
 			if html.match(/fnt\d+/)
-				familySet = Util.unique([...familySet, ...html.match(/fnt\d+/g)])
+				fonts = Util.unique([...fonts, ...html.match(/fnt\d+/g)])
 
-		fontStyle = ''
-		for family in familySet
-			fontStyle += "@font-face { font-family: #{family}; src: url(#{pathDir}/data/#{family}.woff); }\n"
-		# console.log('[slide-viewer]', 'font-style', familySet, fontStyle)
-		$('#scoped-style').html($('#scoped-style').html() + fontStyle)
+		for i in [0...fonts.length]
+			counter += 1
+			makeCallback = (i) ->    # 警惕 Javascript 闭包陷阱！！！
+				(base64) ->
+					cssCode = "@font-face { font-family: #{fonts[i]}; src: url(#{base64}) format('woff'); }\n"
+					$('#scoped-style').html($('#scoped-style').html() + cssCode)
+					counter -= 1
+					checkLoaded()
+			asyncFetchBase64("#{pathDir}/data/#{fonts[i]}.woff").then(makeCallback(i))
+		
+		walkBy = (element) ->
+			# console.log(element.tagName, element)
+			if not element
+				return false
+			if element.tagName == 'IMG'
+				element.setAttribute('draggable', 'false')
+				counter += 1
+				asyncFetchBase64(element.src).then (base64) ->
+					element.src = base64
+					counter -= 1
+					checkLoaded()
+			if element.tagName == 'CANVAS' and element.style.visibility == 'hidden'
+				return element.remove()
+			# if element.style.height == '0px' and element.style.width == '0px'
+			# 	return element.remove()
+			for child in element.children
+				walkBy(child)
+			return true
+		for page in [1..totalPage]
+			walkBy(document.getElementById("slide-page-#{page}"))
 
 		$('#viewer-action').append(createCallbackElement('Export as HTML', actionExportAsHtml))
+		$('#viewer-action').append(createCallbackElement('Download as HTML', actionDownloadAsHtml))
 		$('#viewer-action').append(createCallbackElement('Print to PDF', actionPrintToPdf))
 
 		updateShape()
@@ -212,8 +235,8 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 	title: '幻灯片 ' + params.file
 	html: "
 		<div id=\"slide-viewer\">
-			<div id=\"viewer-action\"></div>
 			<div id=\"viewer-loading\">Slide is loading...</div>
+			<div id=\"viewer-action\"></div>
 			<div id=\"slides\"></div>
 			<iframe id=\"slide-iframe\" src=\"#{path}\">Your browser does not support iframes.</iframe>
 		</div>
