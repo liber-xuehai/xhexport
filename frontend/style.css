@@ -102,8 +102,9 @@ table td > p:last-child {
 
 /* 响应 */
 #arespunc-message-list > tbody > tr > td:nth-child(1) {
-  width: 25px;
+  width: 35px;
   text-align: center;
+  padding: var(--compressed-table-padding);
 }
 #arespunc-message-list > tbody > tr > td:nth-child(2) {
   width: 60px;
@@ -184,4 +185,39 @@ table td > p:last-child {
 #acldstu-homework > tbody > tr > td:nth-child(3) {
   padding-left: 12px;
   padding-right: 12px;
+}
+
+#acldstu-homework-sheet > thead > tr > th:nth-child(1) {
+  background: #f0f0f0;
+}
+#acldstu-homework-sheet > tbody > tr > td:nth-child(1) {
+  background: #f0f0f0;
+  width: 35px;
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+#acldstu-homework-sheet > tbody > tr > td:nth-child(3),
+#acldstu-homework-sheet > tbody > tr > td:nth-child(4) {
+  text-align: center;
+}
+@media print {
+  #acldstu-homework-sheet > thead > tr > th:nth-child(1),
+  #acldstu-homework-sheet > tbody > tr > td:nth-child(1) {
+    background: #fff;
+  }
+}
+
+#acldstu-homework-mcq tbody > tr > td {
+  text-align: center;
+}
+#acldstu-homework-mcq tbody > tr:nth-child(odd) {
+  background: #f0f0f0;
+}
+#acldstu-homework-mcq tbody > tr:nth-child(odd) > td {
+  font-weight: bold;
+}
+@media print {
+  #acldstu-homework-mcq tbody > tr:nth-child(odd) {
+    background: #fff;
+  }
 }

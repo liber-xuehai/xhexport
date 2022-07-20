@@ -37,19 +37,29 @@ def build():
         else:
             path_start = 0
 
-        homework = [dict(
-            id=i[1],
-            name=i[4],
-            score=i[17],
-            user_id=user_id,
-            teacher_id=i[24],
-            subject=subject_dict[i[9]] if i[9] in subject_dict else '',
-            subject_id=i[9],
-            create_time=i[3],
-            update_time=i[10],
-            remote_url=i[2],
-            local_path=download_bean[i[2]][path_start:] if i[2] in download_bean else '',
-        ) for i in select(db, 'xh_yzy_student_work_list')]
+        sheet_detail = {i[1]: json.loads(i[3]) for i in select(db, 'sheet_detail')}
+        for id in sheet_detail:
+            fs.write(config.result_root, f'acldstu/sheet/{id}.json', content=json.dumps(sheet_detail[id], ensure_ascii=False))
+        
+        homework = []
+        for i in select(db, 'xh_yzy_student_work_list'):
+            data = dict(
+                id=i[1],
+                name=i[4],
+                score=i[17],
+                user_id=user_id,
+                teacher_id=i[24],
+                subject=subject_dict[i[9]] if i[9] in subject_dict else '',
+                subject_id=i[9],
+                create_time=i[3],
+                update_time=i[10],
+                remote_url=i[2],
+                local_path=download_bean[i[2]][path_start:] if i[2] in download_bean else '',
+                has_sheet=i[1] in sheet_detail,
+            )
+            if data['has_sheet'] and sheet_detail[data['id']]['subjectiveTopicAnswers']:
+                data['remote_url'] = sheet_detail[data['id']]['subjectiveTopicAnswers']
+            homework.append(data)
 
         general_homework.extend(homework)
 

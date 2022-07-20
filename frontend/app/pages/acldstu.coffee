@@ -14,7 +14,11 @@ Router.register '/acldstu', ->
 		linkedName = col.name
 		if col.local_path
 			linkedName = Element.Link(col.name, '#acldstu/homework', parseHomeworkUri(col.local_path))
-		user_id = String col.user_id
+		else if col.has_sheet
+			linkedName = Element.Link(col.name, '#acldstu/homework-sheet/' + col.id)
+		if col.remote_url
+			linkedName += ' <sup>' + Element.Link('#', col.remote_url) + '</sup>'
+		user_id = String(col.user_id)
 		if col.user_extended and col.user_extended.length
 			user_id += '(+' + col.user_extended.length + ')'
 		table.push [
@@ -24,7 +28,7 @@ Router.register '/acldstu', ->
 			col.score.toFixed(),
 			Util.Date.toShortDate(col.create_time),
 			Util.Date.toShortDate(col.update_time),
-			user_id
+			user_id,
 		]
 
 	title: '云作业'
@@ -35,7 +39,6 @@ Router.register '/acldstu', ->
 
 Router.register '/acldstu/homework', ({ params }) ->
 	path = "/xuehai/#{params.school}/filebases/com.xh.acldstu/#{params.student}/#{params.teacher}/#{params.file}"
-	console.log(path)
 	dict = await Data.fetch '/data/acldstu/dictionary.json'
 	data = JSON.parse await Data.fetch path
 	table = Data.current = []
@@ -78,3 +81,50 @@ Router.register '/acldstu/homework', ({ params }) ->
 			.find '.mathquill-embedded-latex'
 			.each ->
 				katex.render this.innerText, this, {displayMode: false, throwOnError: false}
+
+Router.register '/acldstu/homework-sheet/*', (work_id) ->
+	data = await Data.fetch '/data/acldstu/sheet/' + work_id + '.json'
+
+	mainTable = []
+	for col in data.scanTopics
+		col.topicNo = col.topicNo + 1
+		for topic in data.topicTitles
+			if topic.topicNoSet.includes(col.topicNo - 1)
+				col.type = topic.titleName
+				break
+		col.answer = col.answer
+			.replace(/<<<<<<<我是填空题键盘输入类型的分隔符>>>>>>>/g, ' && ')
+		if col.systemType != 1 
+			mainTable.push([
+				col.topicNo,
+				col.answer,
+				col.score / 10000,
+				col.type,
+			])
+	if mainTable.length
+		mainTableHTML = $(Element.Table(['#', '答案', '分值', '题型'], mainTable))
+			.attr('id', 'acldstu-homework-sheet')
+			.prop('outerHTML')
+	else
+		mainTableHTML = ''
+	
+	MCQTable = []
+	for col in data.scanTopics
+		if col.systemType == 1
+			MCQTable.push([col.topicNo, col.answer, col.score / 10000])
+	if MCQTable.length
+		MCQTableHTML = '<table id="acldstu-homework-mcq"><tbody>'
+		for i in [0...(MCQTable.length + 4) / 5]
+			MCQTableHTML += '<tr>'
+			for j in [0...Math.min(5, MCQTable.length - 5 * i)]
+				MCQTableHTML += '<td>'+ MCQTable[i * 5 + j][0] + '</td>'
+			MCQTableHTML += '</tr><tr>'
+			for j in [0...Math.min(5, MCQTable.length - 5 * i)]
+				MCQTableHTML += '<td>'+ MCQTable[i * 5 + j][1] + '</td>'
+			MCQTableHTML += '</tr>'
+		MCQTableHTML += '</tbody></table>'
+	else
+		MCQTableHTML = ''
+
+	title: work_id + ' - 云作业'
+	html: MCQTableHTML + (if MCQTableHTML && mainTableHTML then '<br>' else '')+ mainTableHTML
