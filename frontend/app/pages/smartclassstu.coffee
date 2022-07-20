@@ -191,7 +191,7 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 		for page in [1..totalPage]
 			slideJumpToPage(page)
 			html = $window.document.querySelector("#root>#main>#s#{page - 1}").innerHTML
-			html = html.replace(/ src="(.*?)"/g, ' src="' + pathDir + '/$1"')
+			# html = html.replace(/ src="(.*?)"/g, ' src="' + pathDir + '/$1"')
 			$slides.append("<article id=\"slide-page-#{page}\">#{html}</article>")
 			if html.match(/fnt\d+/)
 				fonts = Util.unique([...fonts, ...html.match(/fnt\d+/g)])
@@ -210,13 +210,18 @@ Router.register '/smartclassstu/slideViewer', ({ params })->
 			# console.log(element.tagName, element)
 			if not element
 				return false
-			if element.tagName == 'IMG'
-				element.setAttribute('draggable', 'false')
-				counter += 1
-				asyncFetchBase64(element.src).then (base64) ->
-					element.src = base64
-					counter -= 1
-					checkLoaded()
+			if element.src
+				url = new URL(element.src)
+				element.src = pathDir + url.pathname
+				console.log(element.src, url)
+				if element.tagName == 'IMG'
+					element.setAttribute('draggable', 'false')
+					counter += 1
+					console.log(element.src)
+					asyncFetchBase64(element.src).then (base64) ->
+						element.src = base64
+						counter -= 1
+						checkLoaded()
 			if element.tagName == 'CANVAS' and element.style.visibility == 'hidden'
 				return element.remove()
 			# if element.style.height == '0px' and element.style.width == '0px'
