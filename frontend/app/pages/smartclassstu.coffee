@@ -28,13 +28,13 @@ Router.register '/smartclassstu', ->
 	for col in data
 		actions = []
 
-		if col.type in [6, 8]
+		if col.type in [1, 6, 8]
 			name = Element.Link(col.name, '/' + col.local_path)
 		else if col.type == 5
 			name = Element.Link(col.name, '#smartclassstu/slideViewer', parseSlideUri(col.local_path))
 		else
 			name = col.name
-		
+
 		# if col.type in [6, 8]
 		# 	fileName = col.local_path.split('/')[-1..][0]
 		# 	actions.push(Element.Button('文件名', 'window.Util.clipText(\'' + fileName + '\')'))

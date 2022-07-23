@@ -55,7 +55,7 @@ def build():
             if e['type'] in [5, 6]:
                 basename = path.basename(e['remote_url'])[:-3]
                 e['local_path'] = local_prefix + basename + e['local_path']
-            elif e['type'] == 8:
+            elif e['type'] == [1, 8]:
                 e['local_path'] = local_prefix + path.basename(e['remote_url'])
 
         general_task.update(task)
