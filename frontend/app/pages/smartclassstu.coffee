@@ -40,10 +40,9 @@ Router.register '/smartclassstu', ->
 		# 	actions.push(Element.Button('文件名', 'window.Util.clipText(\'' + fileName + '\')'))
 		
 		if col.type is 5
-			console.log(col)
 			base64 = Util.Base64.encode(JSON.stringify(col))
 			command = 'python xuehai.py export ykt ' + base64
-			actions.push(Element.Button('导出命令', 'window.Util.clipText(\'' + command + '\')'))
+			actions.push(Element.Button('CLI::Export', 'window.Util.clipText(\'' + command + '\')'))
 
 		user_id = String(col.user_id)
 		if col.user_extended and col.user_extended.length
