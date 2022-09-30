@@ -74,7 +74,7 @@ def build():
                 if row['type'] in [5, 6]:
                     basename = path.basename(resource[-1]['remote_url'])[:-3]
                     resource[-1]['local_path'] = local_prefix + basename + row['local_path']
-                elif row['type'] == [1, 8]:
+                elif row['type'] in [1, 8]:
                     resource[-1]['local_path'] = local_prefix + path.basename(resource[-1]['remote_url'])
             elif row['download_file_path']:
                 resource[-1]['local_path'] = row['download_file_path'][row['download_file_path'].index('xuehai'):]

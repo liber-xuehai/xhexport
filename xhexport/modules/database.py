@@ -1,5 +1,7 @@
 import sqlite3
 from typing import List, Dict
+from xhexport import fs
+from xhexport.utils.log import logger
 
 
 class Database:
@@ -27,4 +29,5 @@ class Database:
         else:
             path = link
 
+        logger('database')('open', path)
         self.conn = sqlite3.connect(path)
