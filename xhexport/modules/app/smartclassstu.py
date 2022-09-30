@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import sqlite3
 from os import path
 from colorama import Fore
 from xhexport import fs, config
@@ -60,6 +59,8 @@ def build():
         }
 
         resource = []
+        local_prefix = f'xuehai/{config.school_id}/filebases/{package_name}/{user_id}/ztktv4_resource/'
+
         for row in db.selectKV('resourceinfo'):
             if row['source_id'] not in task:
                 continue
@@ -68,16 +69,15 @@ def build():
                 'download_time': row['create_time'],
                 'type': row['type'],
                 'remote_url': row['zip_url'][:-2],
-                'local_path': row['local_path'],
             })
-
-        local_prefix = f'xuehai/{config.school_id}/filebases/{package_name}/{user_id}/ztktv4_resource/'
-        for e in resource:
-            if e['type'] in [5, 6]:
-                basename = path.basename(e['remote_url'])[:-3]
-                e['local_path'] = local_prefix + basename + e['local_path']
-            elif e['type'] == [1, 8]:
-                e['local_path'] = local_prefix + path.basename(e['remote_url'])
+            if row['local_path']:
+                if row['type'] in [5, 6]:
+                    basename = path.basename(resource[-1]['remote_url'])[:-3]
+                    resource[-1]['local_path'] = local_prefix + basename + row['local_path']
+                elif row['type'] == [1, 8]:
+                    resource[-1]['local_path'] = local_prefix + path.basename(resource[-1]['remote_url'])
+            elif row['download_file_path']:
+                resource[-1]['local_path'] = row['download_file_path'][row['download_file_path'].index('xuehai'):]
 
         general_task.update(task)
         general_resource.extend(resource)
