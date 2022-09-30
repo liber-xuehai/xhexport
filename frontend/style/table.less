@@ -1,6 +1,7 @@
 table {
-	width: 100%;
-	font-size: 14px;
+	min-width: 100%;
+	overflow-x: scroll;
+
 	border-collapse: collapse;
 
 	&,
@@ -27,11 +28,30 @@ table {
 		max-width: 100%;
 	}
 
-	td>p:first-child {
-		margin-block-start: 0.5em;
+	td>p {
+		&:first-child {
+			margin-block-start: 0.5em;
+		}
+
+		&:last-child {
+			margin-block-end: 0.5em;
+		}
+	}
+}
+
+table.datatable {
+	font-size: 14px;
+
+	thead tr,
+	tbody tr:nth-of-type(even) {
+		background: #f4f4f4;
 	}
 
-	td>p:last-child {
-		margin-block-end: 0.5em;
+	@media print {
+
+		thead tr,
+		tbody tr {
+			background-color: white !important;
+		}
 	}
 }

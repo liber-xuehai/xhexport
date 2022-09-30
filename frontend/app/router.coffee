@@ -72,6 +72,7 @@ window.onresize = ->
 	if window.Router.currentPage and window.Router.currentPage.onWindowResize
 		window.Router.currentPage.onWindowResize()
 window.onresize()
+document.addEventListener 'DOMContentLoaded', window.onresize
 
 document.addEventListener 'copy', (event) ->
 	if window.Router.currentPage and window.Router.currentPage.onClipCopy
