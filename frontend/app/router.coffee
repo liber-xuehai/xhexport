@@ -68,7 +68,7 @@ window.Router = new class
 
 
 window.onresize = ->
-	document.getElementById('container').style['margin-top'] = (document.getElementById('header').offsetHeight + 10) + 'px';
+	document.getElementById('container').style['margin-top'] = ((document.getElementById('header').offsetHeight || 60) + 10) + 'px';
 	if window.Router.currentPage and window.Router.currentPage.onWindowResize
 		window.Router.currentPage.onWindowResize()
 window.onresize()

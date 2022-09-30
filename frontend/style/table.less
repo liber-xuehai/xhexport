@@ -40,11 +40,25 @@ table {
 }
 
 table.datatable {
-	font-size: 14px;
+	font-size: 13.5px;
 
 	thead tr,
 	tbody tr:nth-of-type(even) {
 		background: #f4f4f4;
+	}
+
+	thead tr th.thead-id {
+		width: 50px;
+		text-align: center;
+		padding: var(--compressed-table-padding);
+	}
+
+	thead tr th.thead-time {
+		width: 108px;
+	}
+
+	tbody tr td:first-child {
+		text-align: center;
 	}
 
 	@media print {

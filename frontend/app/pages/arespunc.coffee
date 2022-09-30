@@ -18,7 +18,7 @@ Router.register '/arespunc', ->
 		])
 
 	title: '响应'
-	html: Element.Table ['#', '类型', '名称', '更新时间'], table
+	html: Element.Table ['#.thead-id', '类型', '名称', '更新时间.thead-time'], table
 
 
 Router.register '/arespunc/*', (session_id) ->
@@ -48,7 +48,7 @@ Router.register '/arespunc/*', (session_id) ->
 			]
 
 	title: session_id + ' - 云作业'
-	html: $ Element.Table ['#', '发送人', '时间', '内容'], table
+	html: $ Element.Table ['#.thead-id', '发送人', '时间.thead-time', '内容'], table
 		.attr 'id', 'arespunc-message-list'
 		.attr 'class', 'datatable'
 		.prop 'outerHTML'

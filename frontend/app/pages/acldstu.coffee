@@ -32,7 +32,7 @@ Router.register '/acldstu', ->
 		]
 
 	title: '云作业'
-	html: $ Element.Table ['#', '学科', '名称', '分数', '创建时间', '更新时间', '用户'], table
+	html: $ Element.Table ['#.thead-id', '学科', '名称', '分数', '创建时间.thead-time', '更新时间.thead-time', '用户'], table
 		.attr 'id', 'acldstu-list'
 		.attr 'class', 'datatable'
 		.prop 'outerHTML'
@@ -74,7 +74,7 @@ Router.register '/acldstu/homework', ({ params }) ->
 				]
 	
 	title: path.split('/')[-1..][0] + ' - 云作业'
-	html: $ Element.Table ['#', '类型', '内容'], table
+	html: $ Element.Table ['#.thead-id', '类型', '内容'], table
 		.attr 'id', 'acldstu-homework'
 		.attr 'class', 'datatable'
 		.prop 'outerHTML'

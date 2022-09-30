@@ -1,8 +1,14 @@
 window.Element =
+	parse: (element, plain) ->
+		if not plain.includes('.')
+			return '<' + element + '>' + plain + '</' + element + '>'
+		match = plain.split('.')
+		'<' + element + ' class="' + match.slice(1).join(' ') + '">' + match[0] + '</' + element + '>'
+
 	Table: (thead, tbody) ->
 		html = '<table><thead><tr>'
 		for row in thead
-			html += '<th>' + row + '</th>'
+			html += Element.parse('th', row)
 		html += '</tr></thead><tbody>'
 		for col in tbody
 			html += '<tr>'
