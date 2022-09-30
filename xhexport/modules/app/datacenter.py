@@ -30,7 +30,10 @@ def build():
         for row in db.selectKV('RESOURCE_LOCAL_ENTITY'):
             resource.append({
                 'id': row['id'],
+                'name': row['name'],
                 'user_id': user_id,
+                'teacher_id': row['teacher_id'],
+                'teacher_name': row['teacher_name'],
                 'download_time': row['down_time'],
                 'create_time': row['create_time'],
                 'update_time': row['update_time'],
@@ -40,9 +43,8 @@ def build():
             file_basename = path.splitext(path.basename(row['file_url']))[0]
             zip_basename = path.splitext(path.basename(row['zip_url']))[0] if row['zip_url'] else None
             folder = row['save_cache_dir'][row['save_cache_dir'].index('xuehai'):]
-            # print(row)
             if row['resource_type'] == 8:
-                resource[-1]['local_path'] = f'{folder}/{file_basename}/pdf'
+                resource[-1]['local_path'] = f'{folder}/{file_basename}.pdf'
             elif row['resource_type'] == 6:
                 pdf_folder = f'{folder}/{zip_basename}/pdf'
                 target_folder = fs.join(config.school_file_root, pdf_folder[pdf_folder.index(package_name + '/preview'):])
