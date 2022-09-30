@@ -1,0 +1,101 @@
+// 云作业
+
+#acldstu-list>tbody>tr {
+  td:nth-child(1) {
+    // #
+    width: 45px;
+    text-align: center;
+    padding: var(--compressed-table-padding);
+  }
+
+  td:nth-child(2) {
+    // 学科
+    width: 70px;
+    text-align: center;
+    padding: var(--compressed-table-padding);
+  }
+
+  td:nth-last-child(1) {
+    // 用户
+    width: 85px;
+    padding: var(--compressed-table-padding);
+  }
+
+  td:nth-last-child(2),
+  td:nth-last-child(3) {
+    // 创建时间 & 更新时间
+    width: 110px;
+  }
+
+  td:nth-last-child(4) {
+    // 分数
+    width: 40px;
+    text-align: center;
+  }
+}
+
+#acldstu-list>thead>tr>th:nth-last-child(4) {
+  // 分数
+  padding: var(--compressed-table-padding);
+}
+
+
+#acldstu-homework>tbody>tr>td:nth-child(1) {
+  width: 35px;
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+
+#acldstu-homework>tbody>tr>td:nth-child(2) {
+  width: 45px;
+  text-align: center;
+}
+
+#acldstu-homework>tbody>tr>td:nth-child(3) {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+#acldstu-homework-sheet>thead>tr>th:nth-child(1) {
+  background: #f0f0f0;
+}
+
+#acldstu-homework-sheet>tbody>tr>td:nth-child(1) {
+  background: #f0f0f0;
+  width: 35px;
+  text-align: center;
+  padding: var(--compressed-table-padding);
+}
+
+#acldstu-homework-sheet>tbody>tr>td:nth-child(3),
+#acldstu-homework-sheet>tbody>tr>td:nth-child(4) {
+  text-align: center;
+}
+
+@media print {
+
+  #acldstu-homework-sheet>thead>tr>th:nth-child(1),
+  #acldstu-homework-sheet>tbody>tr>td:nth-child(1) {
+    background: #fff;
+  }
+}
+
+#acldstu-homework-mcq {
+  tbody>tr>td {
+    text-align: center;
+  }
+
+  tbody>tr:nth-child(odd) {
+    background: #f0f0f0;
+  }
+
+  tbody>tr:nth-child(odd)>td {
+    font-weight: bold;
+  }
+
+  @media print {
+    tbody>tr:nth-child(odd) {
+      background: #fff;
+    }
+  }
+}

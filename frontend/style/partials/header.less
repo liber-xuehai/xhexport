@@ -1,0 +1,42 @@
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: white;
+	z-index: 100;
+	box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+#navbar {
+	/* height: 60px; */
+	width: 100%;
+	line-height: 60px;
+	text-align: center;
+
+	a {
+		height: 20px;
+		line-height: 20px;
+		font-size: 18px;
+		padding: 20px;
+		text-decoration: none;
+		transition: color 0.2s;
+
+		color: black;
+
+		&:hover {
+			color: #0008;
+		}
+	}
+}
+
+@media (max-width: 600px) {
+	#navbar {
+		line-height: 40px;
+	}
+
+	#navbar a {
+		font-size: 16px;
+		padding: 10px;
+	}
+}

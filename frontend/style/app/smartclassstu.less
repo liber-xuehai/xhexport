@@ -1,0 +1,21 @@
+// 云课堂
+
+#smartclassstu-list>tbody>tr {
+	td:nth-child(1) {
+		// #
+		text-align: center;
+		padding: var(--compressed-table-padding);
+	}
+
+	td:nth-last-child(2) {
+		// 用户
+		min-width: 60px;
+		overflow: hidden;
+	}
+
+	td:nth-last-child(3),
+	td:nth-last-child(4) {
+		// 创建时间 & 更新时间
+		min-width: 110px;
+	}
+}
