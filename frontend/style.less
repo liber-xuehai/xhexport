@@ -98,7 +98,7 @@ header {
   width: 100%;
   background-color: white;
   z-index: 100;
-  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 #navbar {
   /* height: 60px; */
@@ -113,16 +113,16 @@ header {
   padding: 20px;
   text-decoration: none;
   color: black;
-  transition: color .2s;
+  transition: color 0.2s;
 }
 #navbar a:hover {
-  color:#0008;
+  color: #0008;
 }
-@media  (max-width: 600px) {
+@media (max-width: 600px) {
   #navbar {
     line-height: 40px;
   }
-  #navbar a{
+  #navbar a {
     font-size: 16px;
     padding: 10px;
   }
@@ -162,21 +162,21 @@ header {
   text-align: center;
   padding: var(--compressed-table-padding);
 }
-#acldstu-list > tbody > tr > td:nth-last-child(2) {
+#smartclassstu-list > tbody > tr > td:nth-last-child(2) {
   /* 用户 */
-  width: 85px;
-  padding: var(--compressed-table-padding);
+  min-width: 60px;
+  overflow: hidden;
 }
 #smartclassstu-list > tbody > tr > td:nth-last-child(3),
 #smartclassstu-list > tbody > tr > td:nth-last-child(4) {
   /* 创建时间 & 更新时间 */
-  width: 110px;
+  min-width: 110px;
 }
 
 /* 云作业 */
 #acldstu-list > tbody > tr > td:nth-child(1) {
   /* # */
-  width:45px;
+  width: 45px;
   text-align: center;
   padding: var(--compressed-table-padding);
 }
