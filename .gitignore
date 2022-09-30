@@ -1,6 +1,6 @@
 /apk
 /config.yml
-/xuehai
+/xuehai*
 /data
 /export
 /*.lnk

@@ -7,6 +7,7 @@ from colorama import Fore
 from xhexport import fs, config
 from xhexport.utils.log import logger
 from xhexport.utils.sql import select
+from xhexport.modules.database import Database
 from xhexport.utils.func import combine_same_origin_items
 
 name = '云课堂'
@@ -15,6 +16,22 @@ package_name = 'com.xh.smartclassstu'
 
 class SmartClassExportError(Exception):
     pass
+
+
+def export(data):
+    from xhexport.methods.ppt_exporter import export_per_page as export_ppt
+    log = logger(package_name + ' export')
+    if data['type'] == 5:
+        log('导出课程', Fore.MAGENTA + data['id'] + Fore.RESET, '课件', Fore.MAGENTA + data['name'] + Fore.RESET)
+        local_dir = data['remote_url'][:-3].split('/')[-1]
+        local_path = data["local_path"] if not data["local_path"].startswith('/') else data["local_path"][1:]
+        real_path = fs.join(config.school_file_root, package_name, data['user_id'], 'ztktv4_resource', local_dir, local_path)
+        dist_path = fs.join(config.result_root, 'export', f'smartclass-{data["id"]}', f'{data["name"]}.pptx')
+        fs.makedirs(path.dirname(dist_path))
+        print(real_path)
+        export_ppt(real_path, dist_path)
+    else:
+        raise SmartClassExportError('不支持的类型')
 
 
 def build():
@@ -27,7 +44,7 @@ def build():
         if fs.access(db_path)['type'] == 'none':
             continue
         log('open database', db_path)
-        db = sqlite3.connect(db_path)
+        db = Database(db_path)
 
         task = {
             i[24]: dict(
@@ -39,16 +56,20 @@ def build():
                 # remote_url=(i[10] or '')[:-2],
                 create_time=i[13],
             )
-            for i in select(db, 'TaskDetail') if i[24]
+            for i in db.select('TaskDetail') if i[24]
         }
 
-        resource = [dict(
-            **task[i[0]],
-            download_time=i[3],
-            type=int(i[4]),
-            remote_url=i[2][:-2],
-            local_path=i[6],
-        ) for i in select(db, 'resourceinfo') if i[0] in task]
+        resource = []
+        for row in db.selectKV('resourceinfo'):
+            if row['source_id'] not in task:
+                continue
+            resource.append({
+                **task[row['source_id']],
+                'download_time': row['create_time'],
+                'type': row['type'],
+                'remote_url': row['zip_url'][:-2],
+                'local_path': row['local_path'],
+            })
 
         local_prefix = f'xuehai/{config.school_id}/filebases/{package_name}/{user_id}/ztktv4_resource/'
         for e in resource:
@@ -67,19 +88,3 @@ def build():
     log('write to result json')
     fs.write(config.result_root, 'smartclassstu/task_detail.json', content=json.dumps(general_task, ensure_ascii=False))
     fs.write(config.result_root, 'smartclassstu/resource.json', content=json.dumps(general_resource, ensure_ascii=False))
-
-
-def export(data):
-    from xhexport.methods.ppt_exporter import export_per_page as export_ppt
-    log = logger(package_name + ' export')
-    if data['type'] == 5:
-        log('导出课程', Fore.MAGENTA + data['id'] + Fore.RESET, '课件', Fore.MAGENTA + data['name'] + Fore.RESET)
-        local_dir = data['remote_url'][:-3].split('/')[-1]
-        local_path = data["local_path"] if not data["local_path"].startswith('/') else data["local_path"][1:]
-        real_path = fs.join(config.school_file_root, package_name, data['user_id'], 'ztktv4_resource', local_dir, local_path)
-        dist_path = fs.join(config.result_root, 'export', f'smartclass-{data["id"]}', f'{data["name"]}.pptx')
-        fs.makedirs(path.dirname(dist_path))
-        print(real_path)
-        export_ppt(real_path, dist_path)
-    else:
-        raise SmartClassExportError('不支持的类型')

@@ -19,10 +19,9 @@ FORE = {
 
 
 def logger(prefix, color='cyan'):
-	
+
     def log(*args):
-        sys.stderr.write(_RS + FORE[color] + '[' + prefix + ']' + _RS + ' ' + \
-                         ' '.join(map(str, args)) + '\n' + _RS)
+        sys.stderr.write(_RS + FORE[color] + '[' + prefix + ']' + _RS + ' ' + ' '.join(map(str, args)) + '\n' + _RS)
 
     if color not in FORE:
         raise Exception('[logger] Selected color is not supported!')
