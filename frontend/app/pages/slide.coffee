@@ -25,6 +25,8 @@ Router.register '/slide', ({ params })->
 	path = params.src
 	if params.app == 'smartclassstu'
 		path = "/xuehai/#{params.school}/filebases/com.xh.smartclassstu/#{params.student}/ztktv4_resource/#{params.class}/ppt/#{params.file}/index.html"
+	else if params.app == 'datacenter'
+		path = "xuehai/#{params.school}/filebases/com.xh.datacenter/preview/5/#{params.id1}/#{params.id2}/ppt/#{params.id3}/index.html"
 	pathDir = path.slice(0, -11)
 	# if not pathDir.startsWith(location.origin)
 	# 	pathDir = location.origin + pathDir
@@ -207,8 +209,8 @@ Router.register '/slide', ({ params })->
 		#slides>article:not(:first-child) { border-top: none; }
 		#slide-viewer { max-width: 802px; margin: auto; }
 		#slide-iframe { display: none; width: 100%; }
-		#viewer-action { margin-bottom: 5px; }
-		#viewer-loading { margin-bottom: 5px; }
+		#viewer-action, #viewer-loading { margin-bottom: 10px; }
+		#viewer-action button { margin-right: 5px; }
 		/* default style */
 		#slides {
 			-webkit-text-size-adjust: auto;

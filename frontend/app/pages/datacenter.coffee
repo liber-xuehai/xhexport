@@ -1,10 +1,11 @@
 parseSlideUri = (uri) ->
-	# args = uri.split('/')
+	args = uri.split('/')
+	console.log(args)
 	app: 'datacenter'
-	# school: args[1]
-	# student: args[4]
-	# class: args[6]
-	# file: args[8]
+	school: args[1]
+	id1: args[6]
+	id2: args[7]
+	id3: args[9]
 
 Router.register '/datacenter', ->
 	data = await Data.fetch('/data/datacenter/resource.json')
@@ -14,10 +15,11 @@ Router.register '/datacenter', ->
 	for col in data
 		actions = []
 
-		if col.type in [6, 8]
-			name = Element.Link(col.name, '/' + col.local_path)
-		# else if col.type == 5
-		# 	name = Element.Link(col.name, '#slide', parseSlideUri(col.local_path))
+		if col.local_path
+			if col.type == 5
+				name = Element.Link(col.name, '#slide', parseSlideUri(col.local_path))
+			else
+				name = Element.Link(col.name, '/' + col.local_path)
 		else
 			name = col.name
 

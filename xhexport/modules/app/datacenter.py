@@ -48,8 +48,14 @@ def build():
             elif row['resource_type'] == 6:
                 pdf_folder = f'{folder}/{zip_basename}/pdf'
                 target_folder = fs.join(config.school_file_root, pdf_folder[pdf_folder.index(package_name + '/preview'):])
-                subfolder = fs.access(target_folder)['list'][0]
-                resource[-1]['local_path'] = f'{pdf_folder}/{subfolder}/{subfolder}.pdf'
+                sub_folder = fs.access(target_folder)['list'][0]
+                resource[-1]['local_path'] = f'{pdf_folder}/{sub_folder}/{sub_folder}.pdf'
+            elif row['resource_type'] == 5:
+                ppt_folder = f'{folder}/{zip_basename}/ppt'
+                target_folder = fs.join(config.school_file_root, ppt_folder[ppt_folder.index(package_name + '/preview'):])
+                sub_folder = fs.access(target_folder)['list']
+                sub_folder = list(filter(lambda x: x.find('.') == -1, sub_folder))[0]
+                resource[-1]['local_path'] = f'{ppt_folder}/{sub_folder}/index.html'
 
         general_resource.extend(resource)
 
