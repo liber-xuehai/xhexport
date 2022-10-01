@@ -19,6 +19,12 @@ window.Router = new class
 		location = url.pathname.split('/').slice(1)
 		found = false
 		console.log('[router]', location, params, @hashMap)
+		
+		for link in document.getElementById('navbar').children
+			if link.getAttribute('href').slice(1) is location[0]
+				link.classList.add('navbar-selected')
+			else
+				link.classList.remove('navbar-selected')
 
 		for routeHash, render of @hashMap
 			route = routeHash.split('/').slice(1)
@@ -65,6 +71,12 @@ window.Router = new class
 
 		if not found
 			$('#container').html('404 Not Found')
+		
+		for link in document.getElementById('navbar').children
+			if link.getAttribute('href').slice(1) is location[0]
+				link.classList.add('navbar-selected')
+			else
+				link.classList.remove('navbar-selected')
 
 
 window.onresize = ->
