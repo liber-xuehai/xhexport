@@ -58,7 +58,7 @@ def get_web(path):
         abort(404)
     path = path[9:]
     rsp = send_from_directory('../../frontend', path)
-    if path.startswith('lib'):
+    if path.startswith('thirdparty'):
         rsp.headers['Cache-Control'] = 'max-age=3000'
     return rsp
 
