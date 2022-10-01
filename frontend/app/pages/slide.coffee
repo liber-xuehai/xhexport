@@ -100,17 +100,47 @@ Router.register '/slide', ({ params })->
 						}
 					}, 250);
 				</script>
-				<style>' + $('#scoped-style').html() + '</style>
+				<style id="style">' + $('#scoped-style').html() + '</style>
+				<style id="print-style">
+					@page {
+						size: ' + width + 'px ' + height + 'px !important;
+						margin: 0mm !important;
+					}
+					@media print {
+						#slides>article {
+							width: ' + width + 'px !important;
+							height: ' + height + 'px !important;
+							zoom: 1 !important;
+							border: none !important;
+						}
+					}
+				</style>
 				<body>' + $('#slides')[0].outerHTML + '</body>
 			</html>
 		'
-		
+	
+	actionPrintToPdf = ->
+		console.log('[slide-viewer]', 'action', 'print-to-pdf')
+		blob = new Blob([exportAsHtml()], {type: 'text/html;charset=utf-8'})
+		blob_url = URL.createObjectURL(blob)
+		iframe = document.createElement('iframe')
+		document.getElementById('slide-viewer').appendChild(iframe)
+		iframe.style.display = 'none'
+		iframe.src = blob_url
+		iframe.onload = () ->
+			setTimeout () ->
+				iframe.focus()
+				iframe.contentWindow.print()
+			, 1
+
 	actionExportAsHtml = ->
+		console.log('[slide-viewer]', 'action', 'export-as-html')
 		blob = new Blob([exportAsHtml()], {type: 'text/html;charset=utf-8'})
 		link = URL.createObjectURL(blob)
 		window.open(link, 'target', '')
-	
+
 	actionDownloadAsHtml = ->
+		console.log('[slide-viewer]', 'action', 'download-as-html')
 		blob = new Blob([exportAsHtml()], {type: 'text/html;charset=utf-8'})
 		element = document.createElement('a')
 		url = window.URL.createObjectURL(blob)
@@ -119,12 +149,6 @@ Router.register '/slide', ({ params })->
 		element.download = filename
 		element.click()
 		window.URL.revokeObjectURL(url)
-	
-	actionPrintToPdf = ->
-		console.log('[slide-viewer]', pdf)
-		printJS
-			printable: 'slides'
-			type: 'html'
 
 	main = ->
 		console.log('[slide-viewer] main', $window._XH.actionList)
@@ -188,9 +212,9 @@ Router.register '/slide', ({ params })->
 		for page in [1..totalPage]
 			walkBy(document.getElementById("slide-page-#{page}"))
 
+		$('#viewer-action').append(createCallbackElement('Print to PDF', actionPrintToPdf))
 		$('#viewer-action').append(createCallbackElement('Export as HTML', actionExportAsHtml))
 		$('#viewer-action').append(createCallbackElement('Download as HTML', actionDownloadAsHtml))
-		$('#viewer-action').append(createCallbackElement('Print to PDF', actionPrintToPdf))
 
 		updateShape()
 		checkLoaded()
@@ -201,7 +225,7 @@ Router.register '/slide', ({ params })->
 			<div id=\"viewer-loading\">Slide is loading...</div>
 			<div id=\"viewer-action\"></div>
 			<div id=\"slides\"></div>
-			<iframe id=\"slide-iframe\" src=\"#{path}\">Your browser does not support iframes.</iframe>
+			<iframe id=\"slide-iframe\" name=\"slide-iframe\" src=\"#{path}\">Your browser does not support iframes.</iframe>
 		</div>
 	"
 	style: "
