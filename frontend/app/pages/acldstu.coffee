@@ -104,9 +104,10 @@ Router.register '/acldstu/homework-sheet/*', (work_id) ->
 				col.type,
 			])
 	if mainTable.length
-		mainTableHTML = $(Element.Table(['#', '答案', '分值', '题型'], mainTable))
-			.attr('id', 'acldstu-homework-sheet')
-			.prop('outerHTML')
+		mainTableHTML = $ Element.Table ['#.thead-id', '答案', '分值', '题型'], mainTable
+			.attr 'id', 'acldstu-homework-sheet'
+			.attr 'class', 'datatable'
+			.prop 'outerHTML'
 	else
 		mainTableHTML = ''
 	
