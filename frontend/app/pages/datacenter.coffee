@@ -26,10 +26,11 @@ Router.register '/datacenter', ->
 		user_id = String(col.user_id)
 		if col.user_extended and col.user_extended.length
 			user_id += '(+' + col.user_extended.length + ')'
+
 		table.push [
 			++index,
+			if col.teacher_name.startsWith('teacher') then col.teacher_name.slice(7) else col.teacher_name,
 			name,
-			col.teacher_name,
 			Util.Date.toShortDate(col.create_time),
 			Util.Date.toShortDate(col.download_time),
 			user_id,
@@ -37,7 +38,7 @@ Router.register '/datacenter', ->
 		]
 
 	title: '云课堂'
-	html: $ Element.Table(['#.thead-id', '名称', '教师', '创建时间.thead-time', '下载时间.thead-time', '用户', '类型'], table)
+	html: $ Element.Table(['#.thead-id', '教师', '名称', '创建时间.thead-time', '下载时间.thead-time', '用户', '类型'], table)
 		.attr 'id', 'datacenter-list'
 		.attr 'class', 'datatable'
 		.prop 'outerHTML'
