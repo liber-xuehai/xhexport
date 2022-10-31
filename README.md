@@ -1,4 +1,4 @@
-# open-xuehai
+# xhexport
 
 学海数据目录解析 & 数据导出项目。
 
