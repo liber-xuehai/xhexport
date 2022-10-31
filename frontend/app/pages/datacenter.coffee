@@ -13,8 +13,6 @@ Router.register '/datacenter', ->
 	index = 0
 
 	for col in data
-		actions = []
-
 		if col.local_path
 			if col.type == 5
 				name = Element.Link(col.name, '#slide', parseSlideUri(col.local_path))

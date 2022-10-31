@@ -25,8 +25,8 @@ window.Element =
 	LinkButton: (text, href) ->
 		'<a class="button" href="' + href + '"' + '>' + text + '</a>'
 
-	NewPageLinkButton: (text, href) ->
-		'<a class="button" href="' + href + '"' + ' target="_blank">' + text + '</a>'
-
 	Button: (text, onclick='') ->
 		'<button class="button" onclick="' + onclick.replace('"', '&quot;') + '">' + text + '</button>'
+	
+	NewPageLinkButton: (text, href) ->
+		'<a class="button" href="' + href + '"' + ' target="_blank">' + text + '</a>'
