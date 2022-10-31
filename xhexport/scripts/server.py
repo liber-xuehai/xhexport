@@ -69,4 +69,4 @@ def get_index():
     return send_from_directory('../..', 'index.html')
 
 
-app.run()
+app.run(host="0.0.0.0")
