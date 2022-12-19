@@ -62,6 +62,8 @@ def build():
         local_prefix = f'xuehai/{config.school_id}/filebases/{package_name}/{user_id}/ztktv4_resource/'
 
         for row in db.selectKV('resourceinfo'):
+            if row['source_id'].endswith("_0"):
+                row['source_id'] = row['source_id'][:-2]
             if row['source_id'] not in task:
                 continue
             resource.append({
